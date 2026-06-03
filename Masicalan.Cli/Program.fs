@@ -17,7 +17,7 @@ else {
 
 let b = x * y ;
 
-if b > 10 then print 0 ; else print 1 ;
+if b > 10 then { print 0 ; } else { print 1 ; }
 
 
 let i = 0 ;
