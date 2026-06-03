@@ -102,7 +102,7 @@ module Parser =
     let parseWhile: Parser<Statement, unit> =
         tuple2
             (pstring "while" >>. spaces >>. parseExpression)
-            (pstring "do" >>. spaces >>. parseStatement)
+            (pstring "do" >>. spaces >>. parseBlock)
         |>> fun (condition, stmts) -> Statement.While (condition, stmts)
 
     // すべての文を統合するパーサ
