@@ -60,16 +60,19 @@ module Parser =
     // let 文のパーサ
     let parseLet : Parser<Statement, unit> =
         pstring "let" >>. wspace >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
+        .>> parseSemicolon
         |>> fun (varName, expr) -> Statement.Let(varName, expr)
 
     // 再代入 <- のパーサ
     let parseAssign : Parser<Statement, unit> =
         parseIdentText .>> wspace .>> pstring "<-" .>> wspace .>>. parseExpression
+        .>> parseSemicolon
         |>> fun (varName, expr) -> Statement.Assign(varName, expr)
 
     // print 文のパーサ
     let parsePrint : Parser<Statement, unit> =
         pstring "print" >>. wspace >>. parseExpression
+        .>> parseSemicolon
         |>> fun expr -> Statement.Print(expr)
     
     // 改行・空白行パーサ
