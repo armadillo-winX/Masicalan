@@ -1,0 +1,8 @@
+let i = 0 ;
+while i < 10 do {
+    i <- i + 1 ;
+}
+print i ;
+
+let k = 0;
+while k < 20 do { k <- k +1 ; print k ; }

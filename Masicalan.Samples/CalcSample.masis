@@ -1,0 +1,12 @@
+let x = 6;
+let y = 3;
+
+let a = x + y
+let b = x - y
+let c = x * y
+let d = x / y
+
+print a
+print b
+print c
+print d
