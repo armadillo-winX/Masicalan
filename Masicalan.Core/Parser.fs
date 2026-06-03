@@ -118,4 +118,4 @@ module Parser =
 
     // プログラム全体のパーサ
     let parseProgram : Parser<Statement list, unit> =
-        spaces >>. sepEndBy parseStatement parseLineEnd .>> eof
+        spaces >>. sepEndBy parseStatement spaces .>> eof
