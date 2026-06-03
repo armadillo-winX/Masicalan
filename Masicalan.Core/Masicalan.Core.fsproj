@@ -6,8 +6,9 @@
 	  <Authors>Mashiro</Authors>
 	  <Product>Masicalan Core</Product>
 	  <Copyright>Copyright (c) 2026 $(Authors)</Copyright>
-	  <Version>$(VersionPrefix)</Version>
+	  <Version>$(VersionPrefix)$(VersionSuffix)</Version>
 	  <VersionPrefix>0.1.0</VersionPrefix>
+	  <VersionSuffix>preview.0</VersionSuffix>
 	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
