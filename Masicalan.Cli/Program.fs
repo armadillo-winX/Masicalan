@@ -1,42 +1,17 @@
 ﻿open FParsec
 open Masicalan.Core
 
-let script = """
-let x = 2;
-let y = 3;
 
-let a = x + y;
-if a > 10 then 
-{
-    print 0 ;
-}
-else {
-    let z = 1 ;
-    print z ;
-}
+let printAst script =
+    match run Parser.parseProgram script with
+        | Success(ast, _, _) ->
+            printfn "%A" ast
+        | Failure(error, _, _) ->
+            printfn "failed: %s" error |>ignore
 
-let b = x * y ;
+let runInterpreter script =
+    Interpreter.Run script |> ignore
 
-if b > 10 then { print 0 ; } else { print 1 ; }
-
-
-let i = 0 ;
-while i < 10 do {
-    i <- i + 1 ;
-}
-print i ;
-
-let k = 0;
-while k < 20 do { k <- k +1 ; print k ; }
-
-
-"""
-
-let env = Interpreter.Run script
-printfn "%A" env
-
-//match run Parser.parseProgram script with
-//    | Success(ast, _, _) ->
-//        printfn "%A" ast
-//    | Failure(error, _, _) ->
-//        printfn "failed: %s" error |>ignore
+let runInterprAndPrintEnv script =
+    let env = Interpreter.Run script
+    printfn "%A" env
