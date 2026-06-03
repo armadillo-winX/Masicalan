@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Masicalan.Core\Masicalan.Core.fsproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(SolutionDir)Masicalan.Samples&quot; &quot;$(TargetDir)Samples&quot; /E /I /Y" />
+  </Target>
+
 </Project>
