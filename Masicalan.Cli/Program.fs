@@ -26,6 +26,9 @@ while i < 10 do {
 }
 print i ;
 
+let k = 0;
+while k < 20 do { k <- k +1 ; print k ; }
+
 
 """
 
