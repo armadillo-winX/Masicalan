@@ -54,6 +54,9 @@ module Parser =
     operPrecParser.AddOperator(InfixOperator("/", wspace, 3, Associativity.Left, fun l r -> Binary(l, Div, r)))
     operPrecParser.AddOperator(InfixOperator("**", wspace, 4, Associativity.Left, fun l r -> Binary(l, Pow, r)))
     
+    // 末尾セミコロンパーサ
+    let parseSemicolon : Parser<unit, unit> = spaces .>> pstring ";"
+
     // let 文のパーサ
     let parseLet : Parser<Statement, unit> =
         pstring "let" >>. wspace >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
