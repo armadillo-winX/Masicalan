@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Masicalan.Cli/Masicalan.Cli.fsproj" />
+  <Project Path="Masicalan.Core/Masicalan.Core.fsproj" />
+</Solution>

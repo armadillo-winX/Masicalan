@@ -1,0 +1,115 @@
+﻿namespace Masicalan.Core
+
+open FParsec
+
+module Parser =
+    // FParsec による演算子
+    // |>> マッピング:       左側のパーサが成功したらその結果を右にキャストして渡す
+    // .>> キープ・レフト:    左右両方をパースし，左側の結果だけを残して右側の結果を捨てる
+    // >>. キープ・ライト:    左右両方をパースし，右側の結果だけを残して左側の結果を捨てる
+
+    // spaces, space1 は改行まで含めてパースする
+
+    // 空白を飛ばすパーサ
+    let wspace = skipMany (anyOf [' '; '\t'])
+
+    // 数値パーサ
+    let parseNum : Parser<Expression, unit> = 
+        pint32 |>> Expression.Num 
+
+    // char に対して文字か数字かを判定
+    let isAsciiOrDigit c = isAsciiLetter c || isDigit c
+
+    // 変数名パーサ
+    let parseIdentText : Parser<string, unit> =
+        many1Satisfy2 isAsciiLetter isAsciiOrDigit
+
+    // 変数パーサ
+    let parseVarible : Parser<Expression, unit> = parseIdentText |>> Expression.Var
+
+    // 優先順位付き演算パーサの初期化
+    let operPrecParser = OperatorPrecedenceParser<Expression, unit, unit>()
+    let parseExpression = operPrecParser.ExpressionParser
+
+    // かっこでくくられた式 or 数値 or 変数 のパース
+    let parseTerm = choice [
+        parseNum
+        parseVarible
+        between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseExpression
+    ]
+
+    operPrecParser.TermParser <- parseTerm .>> wspace
+
+
+    // 演算子の登録
+    // 3番目の引数の数字は演算子の優先順位
+    // 数字が大きければ優先順位が高い
+    // 優先順位 0 で登録（四則演算の 1 よりも低い）
+    operPrecParser.AddOperator(InfixOperator("<",  wspace, 1, Associativity.None, fun l r -> Binary(l, LessThan, r)))
+    operPrecParser.AddOperator(InfixOperator(">",  wspace, 1, Associativity.None, fun l r -> Binary(l, GreaterThan, r)))
+    operPrecParser.AddOperator(InfixOperator("==", wspace, 1, Associativity.None, fun l r -> Binary(l, EqualTo, r)))
+    operPrecParser.AddOperator(InfixOperator("+", wspace, 2, Associativity.Left, fun l r -> Binary(l, Add, r)))
+    operPrecParser.AddOperator(InfixOperator("-", wspace, 2, Associativity.Left, fun l r -> Binary(l, Sub, r)))
+    operPrecParser.AddOperator(InfixOperator("*", wspace, 3, Associativity.Left, fun l r -> Binary(l, Mul, r)))
+    operPrecParser.AddOperator(InfixOperator("/", wspace, 3, Associativity.Left, fun l r -> Binary(l, Div, r)))
+    operPrecParser.AddOperator(InfixOperator("**", wspace, 4, Associativity.Left, fun l r -> Binary(l, Pow, r)))
+    
+    // let 文のパーサ
+    let parseLet : Parser<Statement, unit> =
+        pstring "let" >>. wspace >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
+        |>> fun (varName, expr) -> Statement.Let(varName, expr)
+
+    // 再代入 <- のパーサ
+    let parseAssign : Parser<Statement, unit> =
+        parseIdentText .>> wspace .>> pstring "<-" .>> wspace .>>. parseExpression
+        |>> fun (varName, expr) -> Statement.Assign(varName, expr)
+
+    // print 文のパーサ
+    let parsePrint : Parser<Statement, unit> =
+        pstring "print" >>. wspace >>. parseExpression
+        |>> fun expr -> Statement.Print(expr)
+    
+    // 改行・空白行パーサ
+    let parseLineEnd : Parser<unit, unit> =
+        skipMany (anyOf ['\r'; '\n'])
+
+    let parseStatement, parseStatementRef = createParserForwardedToRef<Statement, unit>()
+
+    // 波括弧ブロックのパーサ
+    let parseBlock: Parser<Statement, unit> =
+        let blockContent = spaces >>. many (parseStatement .>> spaces)
+        between (pstring "{" .>> spaces) (pstring "}" .>> spaces) blockContent
+        |>> Statement.Block
+
+    // if 文パーサ
+    let parseIf: Parser<Statement, unit> =
+        let thenBranch = pstring "then" >>. spaces >>. parseStatement
+        let elseBranch = opt (pstring "else" >>. spaces >>. parseStatement)
+
+        tuple3
+            (pstring "if" >>. spaces >>. parseExpression)
+            thenBranch
+            elseBranch
+        |>> fun (condition, thenStatement, elseStatement) -> Statement.If (condition, thenStatement, elseStatement)
+
+    // while 文パーサ
+    let parseWhile: Parser<Statement, unit> =
+        tuple2
+            (pstring "while" >>. spaces >>. parseExpression)
+            (pstring "do" >>. spaces >>. parseStatement)
+        |>> fun (condition, stmts) -> Statement.While (condition, stmts)
+
+    // すべての文を統合するパーサ
+    parseStatementRef.Value <-
+        choice [
+            attempt parseLet
+            attempt parseAssign
+            attempt parsePrint
+            attempt parseIf
+            attempt parseWhile
+            attempt parseBlock
+        ]
+
+    // プログラム全体のパーサ
+    let parseProgram : Parser<Statement list, unit> =
+        spaces >>. sepEndBy parseStatement parseLineEnd .>> eof
