@@ -89,8 +89,8 @@ module Parser =
 
     // if 文パーサ
     let parseIf: Parser<Statement, unit> =
-        let thenBranch = pstring "then" >>. spaces >>. parseStatement
-        let elseBranch = opt (pstring "else" >>. spaces >>. parseStatement)
+        let thenBranch = pstring "then" >>. spaces >>. parseBlock
+        let elseBranch = opt (pstring "else" >>. spaces >>. parseBlock)
 
         tuple3
             (pstring "if" >>. spaces >>. parseExpression)
