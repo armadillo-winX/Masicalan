@@ -13,7 +13,7 @@ type Expression =
 
 // Statement : 文: 実行することで環境を変化させる(値は返さない)
 type Statement = 
-    | Let of string * Expression                          // define variable <- immutable変数 と mutable変数 を分けたい
+    | Let of string * Expression                          // define variable
     | Assign of string * Expression                       // assign value
     | While of Expression * Statement                     // while loop
     | If of Expression * Statement * Statement option     // if-else
