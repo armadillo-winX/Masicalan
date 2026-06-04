@@ -81,10 +81,6 @@ module Parser =
         pstring "return" >>. wspace >>. parseExpression .>> parseSemicolon
         |>> Statement.Return
 
-    // 引数リストのパーサ (関数定義)
-    let parseParams : Parser<string list, unit> =
-        sepBy (parseIdentText .>> spaces) (pstring "," .>> spaces)
-    
     // 改行・空白行パーサ
     let parseLineEnd : Parser<unit, unit> =
         skipMany (anyOf ['\r'; '\n'])
@@ -114,7 +110,11 @@ module Parser =
             (pstring "while" >>. spaces >>. parseExpression)
             (pstring "do" >>. spaces >>. parseBlock)
         |>> fun (condition, stmts) -> Statement.While (condition, stmts)
-
+        
+    // 引数リストのパーサ (関数定義)
+    let parseParams : Parser<string list, unit> =
+        sepBy (parseIdentText .>> spaces) (pstring "," .>> spaces)
+    
     // 関数定義文パーサ
     let parseFunction : Parser<Statement, unit> =
         let fHead = pstring "function" >>. wspace >>. parseIdentText .>> spaces
