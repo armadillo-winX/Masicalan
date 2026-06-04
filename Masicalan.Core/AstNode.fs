@@ -10,6 +10,7 @@ type Expression =
     | Num of int                                            // number literal
     | Var of string                                         // variable reference
     | Binary of Expression * Operator * Expression          // binary operation
+    | CallF of string * Expression list                     // call function
 
 // Statement : 文: 実行することで環境を変化させる(値は返さない)
 type Statement = 
@@ -19,3 +20,4 @@ type Statement =
     | If of Expression * Statement * Statement option     // if-else
     | Block of Statement list                             // block
     | Print of Expression                                 // print
+    | Return of Expression                                // return
