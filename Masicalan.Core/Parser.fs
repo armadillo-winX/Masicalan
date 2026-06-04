@@ -126,6 +126,8 @@ module Parser =
     // すべての文を統合するパーサ
     parseStatementRef.Value <-
         choice [
+            attempt parseFunction
+            attempt parseReturn
             attempt parseLet
             attempt parseAssign
             attempt parsePrint
