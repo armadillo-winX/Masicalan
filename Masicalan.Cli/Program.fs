@@ -20,6 +20,10 @@ let runInterprAndPrintEnv script =
     let env = Interpreter.Run script
     printfn "%A" env
 
+let readScriptFile filePath =
+    let script = File.ReadAllText(filePath)
+    script
+
 // The Main Entry as follow:
 
 let assemblyFilePath = Assembly.GetExecutingAssembly().Location
