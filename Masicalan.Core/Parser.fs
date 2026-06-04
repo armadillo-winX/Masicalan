@@ -25,6 +25,10 @@ module Parser =
     let operPrecParser = OperatorPrecedenceParser<Expression, unit, unit>()
     let parseExpression = operPrecParser.ExpressionParser
 
+    // 引数リストのパーサ
+    let parseArgs : Parser<Expression list, unit> =
+        sepBy (parseExpression .>> wspace) (pstring "," .>> wspace)
+
     // かっこでくくられた式 or 数値 or 変数 のパース
     let parseTerm = choice [
         parseNum
