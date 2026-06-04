@@ -3,8 +3,10 @@ namespace Masicalan.Core
 // 評価器
 
 module Evaluator =
-    // 環境(env): 変数の状態を記憶する辞書
-    // ここでは Map を用いて定義
+    type EnvironmentState = {
+        VariablesEnv : Map<string, int>                      // 変数環境
+        FunctionsEnv : Map<string, string list * Statement>  // 関数環境
+    }
 
     // 式(Expression) を評価する -> 値を返す
     let rec evaluateExpression (env: Map<string, int>) (expr: Expression) =
