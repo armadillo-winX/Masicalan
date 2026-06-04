@@ -80,6 +80,10 @@ module Parser =
     let parseReturn : Parser<Statement, unit> =
         pstring "return" >>. wspace >>. parseExpression .>> parseSemicolon
         |>> Statement.Return
+
+    // 引数リストのパーサ (関数定義)
+    let parseParams : Parser<string list, unit> =
+        sepBy (parseIdentText .>> wspace) (pstring "," .>> wspace)
     
     // 改行・空白行パーサ
     let parseLineEnd : Parser<unit, unit> =
