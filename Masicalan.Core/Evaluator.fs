@@ -8,6 +8,12 @@ module Evaluator =
         FunctionsEnv : Map<string, string list * Statement>  // 関数環境
     }
 
+    // 文(Statement)の実行結果
+    type EvalResult = {
+        Environment: EnvironmentState
+        ReturnValue: int option
+    }
+
     // 式(Expression) を評価する -> 値を返す
     let rec evaluateExpression (env: Map<string, int>) (expr: Expression) =
         match expr with
