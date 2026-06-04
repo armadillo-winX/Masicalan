@@ -35,10 +35,7 @@ module Parser =
     operPrecParser.TermParser <- parseTerm .>> wspace
 
 
-    // 演算子の登録
-    // 3番目の引数の数字は演算子の優先順位
-    // 数字が大きければ優先順位が高い
-    // 優先順位 0 で登録（四則演算の 1 よりも低い）
+    // 算術，比較演算子の登録
     operPrecParser.AddOperator(InfixOperator("<",  wspace, 1, Associativity.None, fun l r -> Binary(l, LessThan, r)))
     operPrecParser.AddOperator(InfixOperator(">",  wspace, 1, Associativity.None, fun l r -> Binary(l, GreaterThan, r)))
     operPrecParser.AddOperator(InfixOperator("==", wspace, 1, Associativity.None, fun l r -> Binary(l, EqualTo, r)))
