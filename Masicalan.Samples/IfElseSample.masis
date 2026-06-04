@@ -1,3 +1,6 @@
+let x = 6;
+let y = 3;
+
 let a = x + y;
 if a > 10 then 
 {
