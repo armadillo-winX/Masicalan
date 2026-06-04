@@ -37,6 +37,7 @@ module Parser =
     // かっこでくくられた式 or 数値 or 変数 のパース
     let parseTerm = choice [
         parseNum
+        attempt parseCallF // 失敗したら変数パーサへ
         parseVarible
         between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseExpression
     ]
