@@ -83,7 +83,7 @@ module Parser =
 
     // 引数リストのパーサ (関数定義)
     let parseParams : Parser<string list, unit> =
-        sepBy (parseIdentText .>> wspace) (pstring "," .>> wspace)
+        sepBy (parseIdentText .>> spaces) (pstring "," .>> spaces)
     
     // 改行・空白行パーサ
     let parseLineEnd : Parser<unit, unit> =
