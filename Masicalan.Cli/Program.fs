@@ -43,3 +43,42 @@ printfn "%s" copyright
 printfn "%s" systemVersion
 printfn "%s" runtimeVersion
 printfn "---------------------------------------------------------------------------"
+
+
+while true do
+    printfn "[0] Run script from a script file"
+    printfn "[1] Run sample script files"
+    printfn "[x] Exit"
+    printfn "Enter operation:"
+    let input = Console.ReadLine()
+    match input with
+    | "0" -> 
+        printfn "Enter script file path:"
+        let pathInput = Console.ReadLine()
+        try
+            readScriptFile pathInput |> runInterpreter
+        with
+        |_ as ex -> printfn "%s" ex.Message
+    | "1" -> 
+        let files = Directory.GetFiles(sampleCodesDirectory, "*.masis", SearchOption.TopDirectoryOnly)
+        let filesOption = files |> Option.ofObj
+        match filesOption with
+        | Some fs -> 
+            let mutable i = 0
+            for file in fs do
+                Path.GetFileName file |> printfn "[%d] %s" i
+                i <- i + 1
+            printfn "Select sample code file:"
+            let result, inputInt = Console.ReadLine() |> Int32.TryParse
+            if result then
+                let fileName = fs.[inputInt]
+                let sampleFilePath = Path.Combine(sampleCodesDirectory, fileName)
+                try
+                    readScriptFile sampleFilePath |> runInterpreter
+                with
+                |_ as ex -> printfn "%s" ex.Message
+            else
+                printfn "Invalid selection"
+        | None -> printfn "Sample code files are missing."
+    | "x" -> exit 0
+    |_ -> printfn "Invalid operation.\n"
