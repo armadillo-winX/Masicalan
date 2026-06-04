@@ -29,6 +29,11 @@ module Parser =
     let parseArgs : Parser<Expression list, unit> =
         sepBy (parseExpression .>> wspace) (pstring "," .>> wspace)
 
+    // 関数呼び出しパーサ
+    let parseCallF : Parser<Expression, unit> =
+        parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs)
+        |>> fun (funcName, args) -> Expression.CallF(funcName, args)
+
     // かっこでくくられた式 or 数値 or 変数 のパース
     let parseTerm = choice [
         parseNum
