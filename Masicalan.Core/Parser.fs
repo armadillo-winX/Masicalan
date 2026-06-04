@@ -115,6 +115,14 @@ module Parser =
             (pstring "do" >>. spaces >>. parseBlock)
         |>> fun (condition, stmts) -> Statement.While (condition, stmts)
 
+    // 関数定義文パーサ
+    let parseFunction : Parser<Statement, unit> =
+        let fHead = pstring "function" >>. wspace >>. parseIdentText .>> spaces
+        let fParams = between (pstring "(" .>> spaces) (pstring ")" .>> spaces) parseParams
+
+        tuple3 fHead fParams (spaces >>. parseBlock)
+        |>> fun (funcName, paramsList, stmts) -> Statement.Function (funcName, paramsList, stmts)
+
     // すべての文を統合するパーサ
     parseStatementRef.Value <-
         choice [
