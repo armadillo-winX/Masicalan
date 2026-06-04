@@ -20,4 +20,5 @@ type Statement =
     | If of Expression * Statement * Statement option     // if-else
     | Block of Statement list                             // block
     | Print of Expression                                 // print
+    | Function of string * string list * Statement        // function
     | Return of Expression                                // return
