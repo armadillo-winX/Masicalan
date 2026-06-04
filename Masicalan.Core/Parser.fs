@@ -75,6 +75,11 @@ module Parser =
         pstring "print" >>. wspace >>. parseExpression
         .>> parseSemicolon
         |>> fun expr -> Statement.Print(expr)
+
+    // return 文パーサ
+    let parseReturn : Parser<Statement, unit> =
+        pstring "return" >>. wspace >>. parseExpression .>> parseSemicolon
+        |>> Statement.Return
     
     // 改行・空白行パーサ
     let parseLineEnd : Parser<unit, unit> =
