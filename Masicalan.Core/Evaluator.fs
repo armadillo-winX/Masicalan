@@ -23,27 +23,14 @@ module Evaluator =
             | Some v -> v
             | None -> name |> failwithf "undefined value: %s"
         | Binary (left, op, right) ->
+            let l = evaluateExpression env left
+            let r = evaluateExpression env right
             match op with
-            | Add -> 
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                l + r
-            | Sub -> 
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                l - r
-            | Mul ->
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                l * r
-            | Div ->
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                l / r
-            | Pow -> 
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                pown l r
+            | Add -> l + r
+            | Sub -> l - r
+            | Mul -> l * r
+            | Div -> l / r
+            | Pow -> pown l r
             // true -> return 1 ; false -> return 0
             | LessThan -> 
                 let l = evaluateExpression env left
