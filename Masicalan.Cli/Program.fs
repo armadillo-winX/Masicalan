@@ -40,8 +40,8 @@ let runtimeVersion = RuntimeInformation.FrameworkDescription
 printfn "---------------------------------------------------------------------------"
 printfn "%s ver.%s" appName appVersion
 printfn "%s" copyright
-printfn "%s" systemVersion
-printfn "%s" runtimeVersion
+printfn "OS: %s" systemVersion
+printfn "Runtime: %s" runtimeVersion
 printfn "---------------------------------------------------------------------------"
 
 
