@@ -14,8 +14,14 @@ module Parser =
     // アンダースコアかどうかを判定
     let isUnderScore c = if c = '_' then true else false
 
+    // アンダースコアかアスキーか判定
+    let isAsciiOrUnderSc c = isAsciiLetter c || isUnderScore c
+
     // char に対して文字か数字かを判定
     let isAsciiOrDigit c = isAsciiLetter c || isDigit c
+
+    // アスキーか数字かアンダースコアか判定
+    let isAsciiOrDigitOrUnderSc c = isAsciiOrDigit c || isUnderScore c
 
     // 変数名パーサ
     let parseIdentText : Parser<string, unit> =
