@@ -57,6 +57,18 @@ module Evaluator =
                 let l = evaluateExpression env left
                 let r = evaluateExpression env right
                 if l = r then 1 else 0
+            | LogAnd ->
+                // 短絡評価
+                if evaluateExpression env left <> 0 && evaluateExpression env right <>0 then
+                    1
+                else
+                    0
+            | LogOr ->
+                // 短絡評価
+                if evaluateExpression env left <> 0 || evaluateExpression env right <> 0 then
+                    1
+                else
+                    0
         | CallF (funcName, args) ->
             match env.FunctionsEnv.TryFind(funcName) with
             | Some (paramsList, stmts) -> 
