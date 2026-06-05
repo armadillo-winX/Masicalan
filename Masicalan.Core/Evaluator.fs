@@ -23,18 +23,40 @@ module Evaluator =
             | Some v -> v
             | None -> name |> failwithf "undefined value: %s"
         | Binary (left, op, right) ->
-            let l = evaluateExpression env left
-            let r = evaluateExpression env right
             match op with
-            | Add -> l + r
-            | Sub -> l - r
-            | Mul -> l * r
-            | Div -> l / r
-            | Pow -> pown l r
+            | Add -> 
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                l + r
+            | Sub -> 
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                l - r
+            | Mul ->
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                l * r
+            | Div ->
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                l / r
+            | Pow -> 
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                pown l r
             // true -> return 1 ; false -> return 0
-            | LessThan -> if l < r then 1 else 0 
-            | GreaterThan -> if l > r then 1 else 0
-            | EqualTo -> if l = r then 1 else 0
+            | LessThan -> 
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                if l < r then 1 else 0 
+            | GreaterThan -> 
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                if l > r then 1 else 0
+            | EqualTo -> 
+                let l = evaluateExpression env left
+                let r = evaluateExpression env right
+                if l = r then 1 else 0
         | CallF (funcName, args) ->
             match env.FunctionsEnv.TryFind(funcName) with
             | Some (paramsList, stmts) -> 
