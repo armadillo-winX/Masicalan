@@ -32,18 +32,9 @@ module Evaluator =
             | Div -> l / r
             | Pow -> pown l r
             // true -> return 1 ; false -> return 0
-            | LessThan -> 
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                if l < r then 1 else 0 
-            | GreaterThan -> 
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                if l > r then 1 else 0
-            | EqualTo -> 
-                let l = evaluateExpression env left
-                let r = evaluateExpression env right
-                if l = r then 1 else 0
+            | LessThan -> if l < r then 1 else 0 
+            | GreaterThan -> if l > r then 1 else 0
+            | EqualTo -> if l = r then 1 else 0
             | LogAnd ->
                 // 短絡評価
                 if evaluateExpression env left <> 0 && evaluateExpression env right <>0 then
