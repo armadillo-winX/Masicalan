@@ -107,7 +107,7 @@ module Evaluator =
                     let eRes = executeStatement currentEnv s
                     match eRes.ReturnValue with
                     | Some v -> eRes
-                    | None -> runInnerBlock currentEnv rest
+                    | None -> runInnerBlock eRes.Environment rest
 
             let innerResult = runInnerBlock env stmts
 
