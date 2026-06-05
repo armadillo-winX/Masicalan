@@ -37,7 +37,7 @@ module Evaluator =
             | EqualTo -> if l = r then 1 else 0
             | LogAnd ->
                 // 短絡評価
-                if evaluateExpression env left <> 0 && evaluateExpression env right <>0 then
+                if evaluateExpression env left <> 0 && evaluateExpression env right <> 0 then
                     1
                 else
                     0
