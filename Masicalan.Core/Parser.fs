@@ -25,7 +25,7 @@ module Parser =
 
     // 変数名パーサ
     let parseIdentText : Parser<string, unit> =
-        many1Satisfy2 isAsciiLetter isAsciiOrDigit
+        many1Satisfy2 isAsciiOrUnderSc isAsciiOrDigitOrUnderSc
 
     // 変数パーサ
     let parseVarible : Parser<Expression, unit> = parseIdentText |>> Expression.Var
