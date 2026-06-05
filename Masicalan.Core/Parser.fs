@@ -46,6 +46,8 @@ module Parser =
 
 
     // 算術，比較演算子の登録
+    operPrecParser.AddOperator(InfixOperator("||", wspace, 1, Associativity.Left, fun l r -> Binary(l, LogOr, r)))
+    operPrecParser.AddOperator(InfixOperator("&&", wspace, 2, Associativity.Left, fun l r -> Binary(l, LogAnd, r)))
     operPrecParser.AddOperator(InfixOperator("<",  wspace, 3, Associativity.None, fun l r -> Binary(l, LessThan, r)))
     operPrecParser.AddOperator(InfixOperator(">",  wspace, 3, Associativity.None, fun l r -> Binary(l, GreaterThan, r)))
     operPrecParser.AddOperator(InfixOperator("==", wspace, 3, Associativity.None, fun l r -> Binary(l, EqualTo, r)))
