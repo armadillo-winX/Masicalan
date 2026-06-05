@@ -3,7 +3,7 @@ namespace Masicalan.Core
 // AST(抽象構文木) のノードの定義
 
 // Operator : 演算子
-type Operator = Add | Sub | Mul | Div | Pow | LessThan | GreaterThan | EqualTo
+type Operator = Add | Sub | Mul | Div | Pow | LessThan | GreaterThan | EqualTo | LogAnd | LogOr
 
 // Expression : 式: 評価(evaluate)することで値になる
 type Expression =
