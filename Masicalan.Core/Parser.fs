@@ -11,6 +11,9 @@ module Parser =
     let parseNum : Parser<Expression, unit> = 
         pint32 |>> Expression.Num 
 
+    // アンダースコアかどうかを判定
+    let isUnderScore c = if c = '_' then true else false
+
     // char に対して文字か数字かを判定
     let isAsciiOrDigit c = isAsciiLetter c || isDigit c
 
