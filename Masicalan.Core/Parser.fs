@@ -46,14 +46,14 @@ module Parser =
 
 
     // 算術，比較演算子の登録
-    operPrecParser.AddOperator(InfixOperator("<",  wspace, 1, Associativity.None, fun l r -> Binary(l, LessThan, r)))
-    operPrecParser.AddOperator(InfixOperator(">",  wspace, 1, Associativity.None, fun l r -> Binary(l, GreaterThan, r)))
-    operPrecParser.AddOperator(InfixOperator("==", wspace, 1, Associativity.None, fun l r -> Binary(l, EqualTo, r)))
-    operPrecParser.AddOperator(InfixOperator("+", wspace, 2, Associativity.Left, fun l r -> Binary(l, Add, r)))
-    operPrecParser.AddOperator(InfixOperator("-", wspace, 2, Associativity.Left, fun l r -> Binary(l, Sub, r)))
-    operPrecParser.AddOperator(InfixOperator("*", wspace, 3, Associativity.Left, fun l r -> Binary(l, Mul, r)))
-    operPrecParser.AddOperator(InfixOperator("/", wspace, 3, Associativity.Left, fun l r -> Binary(l, Div, r)))
-    operPrecParser.AddOperator(InfixOperator("**", wspace, 4, Associativity.Left, fun l r -> Binary(l, Pow, r)))
+    operPrecParser.AddOperator(InfixOperator("<",  wspace, 3, Associativity.None, fun l r -> Binary(l, LessThan, r)))
+    operPrecParser.AddOperator(InfixOperator(">",  wspace, 3, Associativity.None, fun l r -> Binary(l, GreaterThan, r)))
+    operPrecParser.AddOperator(InfixOperator("==", wspace, 3, Associativity.None, fun l r -> Binary(l, EqualTo, r)))
+    operPrecParser.AddOperator(InfixOperator("+", wspace, 4, Associativity.Left, fun l r -> Binary(l, Add, r)))
+    operPrecParser.AddOperator(InfixOperator("-", wspace, 4, Associativity.Left, fun l r -> Binary(l, Sub, r)))
+    operPrecParser.AddOperator(InfixOperator("*", wspace, 5, Associativity.Left, fun l r -> Binary(l, Mul, r)))
+    operPrecParser.AddOperator(InfixOperator("/", wspace, 5, Associativity.Left, fun l r -> Binary(l, Div, r)))
+    operPrecParser.AddOperator(InfixOperator("**", wspace, 6, Associativity.Left, fun l r -> Binary(l, Pow, r)))
     
     // 末尾セミコロンパーサ
     let parseSemicolon : Parser<unit, unit> = spaces .>> pstring ";"
