@@ -49,3 +49,15 @@ module EvaluatorHelper =
         | (VoidVal, VoidVal) -> 
             failwithf "cannnot divide void values"
         |_ -> failwithf "cannot divide %A and %A because these types are different." v1 v2
+
+    let powVal (v1: Value) (v2: Value) =
+        match (v1, v2) with
+        | (IntVal i1, IntVal i2) ->
+            pown i1 i2 |> IntVal 
+        | (FloatVal f1, FloatVal f2) ->
+            FloatVal (f1 ** f2)
+        | (StringVal s1, StringVal s2) ->
+            failwithf "cannot raise \"%s\" to power of \"%s\" because they are string values." s1 s2
+        | (VoidVal, VoidVal) -> 
+            failwithf "cannnot do exponentiation caluculation for void values"
+        |_ -> failwithf "cannot raise %A to power of %A because these types are different." v1 v2
