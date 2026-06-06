@@ -32,21 +32,21 @@ module Evaluator =
             | Div -> l / r
             | Pow -> pown l r
             // true -> return 1 ; false -> return 0
-            | LessThan -> if l < r then 1 else 0 
-            | GreaterThan -> if l > r then 1 else 0
-            | EqualTo -> if l = r then 1 else 0
+            | LessThan -> if l < r then IntVal 1 else IntVal 0 
+            | GreaterThan -> if l > r then IntVal 1 else IntVal 0
+            | EqualTo -> if l = r then IntVal 1 else IntVal 0
             | LogAnd ->
                 // 短絡評価
-                if evaluateExpression env left <> 0 && evaluateExpression env right <> 0 then
-                    1
+                if evaluateExpression env left <> IntVal 0 && evaluateExpression env right <> IntVal 0 then
+                    IntVal 1
                 else
-                    0
+                    IntVal 0
             | LogOr ->
                 // 短絡評価
-                if evaluateExpression env left <> 0 || evaluateExpression env right <> 0 then
-                    1
+                if evaluateExpression env left <> IntVal 0 || evaluateExpression env right <> IntVal 0 then
+                    IntVal 1
                 else
-                    0
+                    IntVal 0
         | CallF (funcName, args) ->
             match env.FunctionsEnv.TryFind(funcName) with
             | Some (paramsList, stmts) -> 
@@ -134,7 +134,7 @@ module Evaluator =
             }
         | If (condition, thenstmt, elsestmt) ->
             let conditionV = evaluateExpression env condition
-            if conditionV <> 0 then
+            if conditionV <> IntVal 0 then
                 executeStatement env thenstmt
             else
                 match elsestmt with
@@ -144,7 +144,7 @@ module Evaluator =
             // 条件が true である限り，再帰的に実行し環境を更新
             let rec loop currentEnv =
                 let conditionV = evaluateExpression currentEnv condition
-                if conditionV <> 0 then
+                if conditionV <> IntVal 0 then
                     let evalRes = executeStatement currentEnv body
                     match evalRes.ReturnValue with
                     | Some rv -> { Environment = evalRes.Environment ; ReturnValue = evalRes.ReturnValue }
