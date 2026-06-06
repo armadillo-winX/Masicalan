@@ -2,6 +2,9 @@ namespace Masicalan.Core
 
 // AST(抽象構文木) のノードの定義
 
+// Type: 型
+type Type = IntType | FloatType | StringType | VoidType
+
 // Operator : 演算子
 type Operator = Add | Sub | Mul | Div | Pow | LessThan | GreaterThan | EqualTo | LogAnd | LogOr
 
