@@ -4,14 +4,14 @@ namespace Masicalan.Core
 
 module Evaluator =
     type EnvironmentState = {
-        VariablesEnv : Map<string, int>                      // 変数環境
+        VariablesEnv : Map<string, Value>                      // 変数環境
         FunctionsEnv : Map<string, string list * Statement>  // 関数環境
     }
 
     // 文(Statement)の実行結果
     type EvalResult = {
         Environment: EnvironmentState
-        ReturnValue: int option
+        ReturnValue: Value option
     }
 
     // 式(Expression) を評価する -> 値を返す
