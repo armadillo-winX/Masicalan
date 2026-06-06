@@ -61,3 +61,39 @@ module EvaluatorHelper =
         | (VoidVal, VoidVal) -> 
             failwithf "cannnot do exponentiation caluculation for void values"
         |_ -> failwithf "cannot raise %A to power of %A because these types are different." v1 v2
+
+    let isLeftLesserThanRight (l: Value) (r: Value) =
+        match (l, r) with
+        | (IntVal li, IntVal ri) ->
+            if li < ri then IntVal 1 else IntVal 0
+        | (FloatVal lf, FloatVal rf) ->
+            if lf < rf then IntVal 1 else IntVal 0
+        | (StringVal s1, StringVal s2) ->
+            failwithf "cannnot compare string values"
+        | (VoidVal, VoidVal) ->
+            failwithf "cannot compare void values"
+        |_-> failwithf "cannot different type values"
+
+    let isLeftGreaterThenRight (l: Value) (r: Value) =
+        match (l, r) with
+        | (IntVal li, IntVal ri) ->
+            if li > ri then IntVal 1 else IntVal 0
+        | (FloatVal lf, FloatVal rf) ->
+            if lf > rf then IntVal 1 else IntVal 0
+        | (StringVal s1, StringVal s2) ->
+            failwithf "cannnot compare string values"
+        | (VoidVal, VoidVal) ->
+            failwithf "cannot compare void values"
+        |_-> failwithf "cannot different type values"
+
+    let isLeftEqualToRight (l: Value) (r:Value) =
+        match (l, r) with
+        | (IntVal li, IntVal ri) ->
+            if li = ri then IntVal 1 else IntVal 0
+        | (FloatVal lf, FloatVal rf) ->
+            if lf = rf then IntVal 1 else IntVal 0
+        | (StringVal s1, StringVal s2) ->
+            failwithf "cannnot compare string values"
+        | (VoidVal, VoidVal) ->
+            failwithf "cannot compare void values"
+        |_-> failwithf "cannot different type values"
