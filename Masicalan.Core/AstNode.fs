@@ -5,6 +5,13 @@ namespace Masicalan.Core
 // Type: 型
 type Type = IntType | FloatType | StringType | VoidType
 
+// Value : 値
+type Value =
+    | IntVal of int
+    | FloatVal of float
+    | StringVal of string
+    | VoidVal
+
 // Operator : 演算子
 type Operator = Add | Sub | Mul | Div | Pow | LessThan | GreaterThan | EqualTo | LogAnd | LogOr
 
