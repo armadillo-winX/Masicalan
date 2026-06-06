@@ -2,8 +2,8 @@ namespace Masicalan.Core
 
 // AST(抽象構文木) のノードの定義
 
-// Type: 型
-type Type = IntType | FloatType | StringType | VoidType
+// Type: 型 インタプリタが実行時に動的型推論をするため，今のところ不要
+//type Type = IntType | FloatType | StringType | VoidType
 
 // Value : 値
 type Value =
