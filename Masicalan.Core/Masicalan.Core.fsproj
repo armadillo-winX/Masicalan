@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Compile Include="AstNode.fs" />
+    <Compile Include="EvaluatorHelper.fs" />
     <Compile Include="Evaluator.fs" />
     <Compile Include="Parser.fs" />
     <Compile Include="Interpreter.fs" />
