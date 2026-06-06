@@ -52,10 +52,12 @@ module Parser =
         parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs)
         |>> fun (funcName, args) -> Expression.CallF(funcName, args)
 
-    // かっこでくくられた式 or 数値 or 変数 のパース
+    // かっこでくくられた式 or リテラル or 変数 のパース
     let parseTerm = choice [
-        parseNum
-        attempt parseCallF // 失敗したら変数パーサへ
+        attempt parseFloatLiteral
+        attempt parseIntLiteral
+        attempt parseStringLiteral
+        attempt parseCallF
         parseVarible
         between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseExpression
     ]
