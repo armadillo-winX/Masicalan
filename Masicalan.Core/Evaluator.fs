@@ -104,8 +104,8 @@ module Evaluator =
             match value with
             | IntVal i -> printfn "Int[%d]" i
             | FloatVal f -> printfn "Float[%f]" f
-            | StringVal s -> printfn "%s" s
-            | VoidVal -> printfn "Void"
+            | StringVal s -> printfn "String[\"%s\"]" s
+            | VoidVal -> printfn "Void[]"
 
             { Environment = env; ReturnValue = None }
         | Function (funcName, paramsList, stmts) ->
