@@ -8,15 +8,15 @@ module Parser =
     let wspace = skipMany (anyOf [' '; '\t'])
 
     // 整数値リテラルパーサ
-    let parseNum : Parser<Expression, unit> = 
+    let parseIntLiteral : Parser<Expression, unit> = 
         pint32 |>> Value.IntVal |>> Expression.ValueLit
 
     // float リテラルパーサ
-    let parseFloat : Parser<Expression, unit> =
+    let parseFloatLiteral : Parser<Expression, unit> =
         pfloat |>> Value.FloatVal |>> Expression.ValueLit
 
     // string リテラルパーサ
-    let parseString : Parser<Expression, unit> =
+    let parseStringLiteral : Parser<Expression, unit> =
         between (pstring "\"") (pstring "\"") (manyChars (noneOf "\""))
         |>> Value.StringVal |>> Expression.ValueLit
 
