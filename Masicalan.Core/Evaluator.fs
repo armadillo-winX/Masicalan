@@ -26,11 +26,11 @@ module Evaluator =
             let l = evaluateExpression env left
             let r = evaluateExpression env right
             match op with
-            | Add -> l + r
-            | Sub -> l - r
-            | Mul -> l * r
-            | Div -> l / r
-            | Pow -> pown l r
+            | Add -> EvaluatorHelper.addVal l r
+            | Sub -> EvaluatorHelper.subVal l r
+            | Mul -> EvaluatorHelper.mulVal l r
+            | Div -> EvaluatorHelper.divVal l r
+            | Pow -> EvaluatorHelper.powVal l r
             // true -> return 1 ; false -> return 0
             | LessThan -> if l < r then IntVal 1 else IntVal 0 
             | GreaterThan -> if l > r then IntVal 1 else IntVal 0
