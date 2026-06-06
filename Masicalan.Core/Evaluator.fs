@@ -32,9 +32,9 @@ module Evaluator =
             | Div -> EvaluatorHelper.divVal l r
             | Pow -> EvaluatorHelper.powVal l r
             // true -> return 1 ; false -> return 0
-            | LessThan -> if l < r then IntVal 1 else IntVal 0 
-            | GreaterThan -> if l > r then IntVal 1 else IntVal 0
-            | EqualTo -> if l = r then IntVal 1 else IntVal 0
+            | LessThan -> EvaluatorHelper.isLeftLesserThanRight l r
+            | GreaterThan -> EvaluatorHelper.isLeftGreaterThenRight l r
+            | EqualTo -> EvaluatorHelper.isLeftEqualToRight l r
             | LogAnd ->
                 // 短絡評価
                 if evaluateExpression env left <> IntVal 0 && evaluateExpression env right <> IntVal 0 then
