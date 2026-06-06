@@ -7,9 +7,9 @@ module Parser =
     // 空白を飛ばすパーサ
     let wspace = skipMany (anyOf [' '; '\t'])
 
-    // 数値パーサ
+    // 整数値リテラルパーサ
     let parseNum : Parser<Expression, unit> = 
-        pint32 |>> Expression.Num 
+        pint32 |>> Value.IntVal |>> Expression.ValueLit
 
     // アンダースコアかどうかを判定
     let isUnderScore c = if c = '_' then true else false
