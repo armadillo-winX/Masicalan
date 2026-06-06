@@ -4,13 +4,13 @@ let y = 3;
 let a = x + y;
 if a > 10 then 
 {
-    print 0 ;
+    print "a is greater than 10" ;
 }
 else {
-    let z = 1 ;
+    let z = "a is lesser than 10 or equal to 10" ;
     print z ;
 }
 
 let b = x * y ;
 
-if b > 10 then { print 0 ; } else { print 1 ; }
+if b > 10 then { print "b is greater than 10" ; } else { print "b is lesser than 10 or equal to 10" ; }
