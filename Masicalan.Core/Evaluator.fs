@@ -17,7 +17,7 @@ module Evaluator =
     // 式(Expression) を評価する -> 値を返す
     let rec evaluateExpression (env: EnvironmentState) (expr: Expression) =
         match expr with
-        | Num n -> n
+        | ValueLit n -> n
         | Var name ->
             match env.VariablesEnv.TryFind(name) with
             | Some v -> v
