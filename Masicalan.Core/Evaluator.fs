@@ -101,7 +101,12 @@ module Evaluator =
             }
         | Print expr ->
             let value = evaluateExpression env expr
-            printfn "%d" value
+            match value with
+            | IntVal i -> printfn "Int[%d]" i
+            | FloatVal f -> printfn "Float[%f]" f
+            | StringVal s -> printfn "%s" s
+            | VoidVal -> printfn "Void"
+
             { Environment = env; ReturnValue = None }
         | Function (funcName, paramsList, stmts) ->
             let newFuncEnv = env.FunctionsEnv.Add(funcName, (paramsList, stmts))
