@@ -32,3 +32,4 @@ type Statement =
     | Print of Expression                                 // print
     | Function of string * string list * Statement        // function
     | Return of Expression                                // return
+    | CallFNotReturn of string * Expression list          // call function without return
