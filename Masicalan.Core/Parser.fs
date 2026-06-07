@@ -82,7 +82,7 @@ module Parser =
 
     // let 文のパーサ
     let parseLet : Parser<Statement, unit> =
-        pstring "let" >>. wspace >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
+        pstring "let" >>. spaces1 >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
         .>> parseSemicolon
         |>> fun (varName, expr) -> Statement.Let(varName, expr)
 
@@ -100,7 +100,7 @@ module Parser =
 
     // return 文パーサ
     let parseReturn : Parser<Statement, unit> =
-        pstring "return" >>. wspace >>. parseExpression .>> parseSemicolon
+        pstring "return" >>. spaces1 >>. parseExpression .>> parseSemicolon
         |>> Statement.Return
 
     // 改行・空白行パーサ
@@ -121,7 +121,7 @@ module Parser =
         let elseBranch = opt (pstring "else" >>. spaces >>. parseBlock)
 
         tuple3
-            (pstring "if" >>. spaces >>. parseExpression)
+            (pstring "if" >>. spaces1 >>. parseExpression)
             thenBranch
             elseBranch
         |>> fun (condition, thenStatement, elseStatement) -> Statement.If (condition, thenStatement, elseStatement)
@@ -129,7 +129,7 @@ module Parser =
     // while 文パーサ
     let parseWhile: Parser<Statement, unit> =
         tuple2
-            (pstring "while" >>. spaces >>. parseExpression)
+            (pstring "while" >>. spaces1 >>. parseExpression)
             (pstring "do" >>. spaces >>. parseBlock)
         |>> fun (condition, stmts) -> Statement.While (condition, stmts)
         
