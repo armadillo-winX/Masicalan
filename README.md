@@ -6,6 +6,9 @@ Microsoft Windows 11 Insider Preview Experimental<br>
 Visual Studio 2026<br>
 .NET 10.0
 
-## FParsec
+## 使用しているライブラリ
 パーサの実装には [FParsec](https://github.com/stephan-tolksdorf/fparsec) を利用しています．<br>
-FParsec には 2-clause BSD License が適用されます．
+### FParsec
+Copyright (c) 2007‒2017, Stephan Tolksdorf. All rights reserved.<br>
+BSD 2-clause License が適用<br>
+[FParsec のライセンス](https://www.quanttec.com/fparsec/license.html)
