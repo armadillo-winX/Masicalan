@@ -158,3 +158,6 @@ module Evaluator =
                     { Environment = currentEnv ; ReturnValue = None }
 
             loop env
+        | CallFNotReturn (funcName, args) ->
+            evaluateExpression env (CallF(funcName, args)) |> ignore
+            { Environment = env; ReturnValue = None}
