@@ -145,6 +145,11 @@ module Parser =
         tuple3 fHead fParams (spaces >>. parseBlock)
         |>> fun (funcName, paramsList, stmts) -> Statement.Function (funcName, paramsList, stmts)
 
+    // 返り値代入なし関数呼び出し文パーサ
+    let parseCallFNotReturn : Parser<Statement, unit> =
+        parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs)
+        |>> fun (funcName, args) -> Statement.CallFNotReturn(funcName, args)
+
     // すべての文を統合するパーサ
     parseStatementRef.Value <-
         choice [
