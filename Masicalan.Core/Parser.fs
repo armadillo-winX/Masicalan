@@ -161,6 +161,7 @@ module Parser =
             attempt parseIf
             attempt parseWhile
             attempt parseBlock
+            attempt parseCallFNotReturn
         ]
 
     // プログラム全体のパーサ
