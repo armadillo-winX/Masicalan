@@ -80,6 +80,15 @@ module Parser =
     // 末尾セミコロンパーサ
     let parseSemicolon : Parser<unit, unit> = spaces .>> pstring ";"
 
+    // 空白・改行パーサ
+    let parseSpaceOrNewLine : Parser<string, unit> = 
+        choice [
+            attempt (pstring " ")
+            attempt (pstring "\t")
+            attempt (pstring "\r")
+            attempt (pstring "\n")
+        ]
+
     // let 文のパーサ
     let parseLet : Parser<Statement, unit> =
         pstring "let" >>. wspace >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
