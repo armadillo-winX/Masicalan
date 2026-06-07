@@ -147,7 +147,7 @@ module Parser =
 
     // 返り値代入なし関数呼び出し文パーサ
     let parseCallFNotReturn : Parser<Statement, unit> =
-        parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs)
+        parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs) .>> parseSemicolon
         |>> fun (funcName, args) -> Statement.CallFNotReturn(funcName, args)
 
     // すべての文を統合するパーサ
