@@ -67,7 +67,7 @@ module Evaluator =
 
                 match result.ReturnValue with
                 | Some v -> v
-                | None -> failwithf "function %s did not return a value" funcName
+                | None -> VoidVal
                 
             | None -> funcName |> failwithf "undefined function: %s"
         
