@@ -117,7 +117,7 @@ module Parser =
 
     // if 文パーサ
     let parseIf: Parser<Statement, unit> =
-        let thenBranch = spaces1 >>. pstring "then" >>. spaces >>. parseBlock
+        let thenBranch = pstring "then" >>. spaces >>. parseBlock
         let elseBranch = opt (pstring "else" >>. spaces >>. parseBlock)
 
         tuple3
@@ -130,7 +130,7 @@ module Parser =
     let parseWhile: Parser<Statement, unit> =
         tuple2
             (pstring "while" >>. spaces1 >>. parseExpression)
-            (spaces1 >>. pstring "do" >>. spaces >>. parseBlock)
+            (pstring "do" >>. spaces >>. parseBlock)
         |>> fun (condition, stmts) -> Statement.While (condition, stmts)
         
     // 引数リストのパーサ (関数定義)
