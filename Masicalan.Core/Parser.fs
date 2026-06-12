@@ -15,6 +15,17 @@ module Parser =
     let parseFloatLiteral : Parser<Expression, unit> =
         pfloat |>> Value.FloatVal |>> Expression.ValueLit
 
+    let parseNumLiteral : Parser<Expression, unit> =
+        let parseOptions = NumberLiteralOptions.AllowFraction ||| NumberLiteralOptions.AllowExponent
+
+        numberLiteral parseOptions "number"
+        |>> fun numLit ->  
+                if numLit.String.Contains(".") then
+                    Value.FloatVal(float numLit.String)
+                else
+                    Value.IntVal(int numLit.String)
+        |>> Expression.ValueLit
+
     // string リテラルパーサ
     let parseStringLiteral : Parser<Expression, unit> =
         between (pstring "\"") (pstring "\"") (manyChars (noneOf "\""))
