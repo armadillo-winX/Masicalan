@@ -31,7 +31,6 @@ module Evaluator =
             | Mul -> EvaluatorHelper.mulVal l r
             | Div -> EvaluatorHelper.divVal l r
             | Pow -> EvaluatorHelper.powVal l r
-            // true -> return 1 ; false -> return 0
             | LessThan -> EvaluatorHelper.isLeftLesserThanRight l r
             | GreaterThan -> EvaluatorHelper.isLeftGreaterThenRight l r
             | EqualTo -> EvaluatorHelper.isLeftEqualToRight l r
