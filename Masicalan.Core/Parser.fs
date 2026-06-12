@@ -66,8 +66,7 @@ module Parser =
 
     // かっこでくくられた式 or リテラル or 変数 のパース
     let parseTerm = choice [
-        attempt parseFloatLiteral
-        attempt parseIntLiteral
+        attempt parseNumLiteral
         attempt parseStringLiteral
         attempt parseCallF
         parseVarible
