@@ -53,6 +53,12 @@ module Parser =
     // 変数パーサ
     let parseVarible : Parser<Expression, unit> = parseIdentText |>> Expression.Var
 
+    // bool リテラルパーサ
+    let parseBoolLiteral : Parser<Expression, unit> =
+        (stringReturn "true" true <|> stringReturn "false" false)
+        |>> Value.BoolVal |>> Expression.ValueLit
+        .>> notFollowedBy (many1Satisfy isAsciiOrDigitOrUnderSc)
+
     // 優先順位付き演算パーサの初期化
     let operPrecParser = OperatorPrecedenceParser<Expression, unit, unit>()
     let parseExpression = operPrecParser.ExpressionParser
@@ -70,6 +76,7 @@ module Parser =
     let parseTerm = choice [
         attempt parseNumLiteral
         attempt parseStringLiteral
+        attempt parseBoolLiteral
         attempt parseCallF
         parseVarible
         between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseExpression
