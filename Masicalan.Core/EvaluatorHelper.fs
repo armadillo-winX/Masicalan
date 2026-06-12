@@ -65,9 +65,9 @@ module EvaluatorHelper =
     let isLeftLesserThanRight (l: Value) (r: Value) =
         match (l, r) with
         | (IntVal li, IntVal ri) ->
-            if li < ri then IntVal 1 else IntVal 0
+            BoolVal (li < ri)
         | (FloatVal lf, FloatVal rf) ->
-            if lf < rf then IntVal 1 else IntVal 0
+            BoolVal (lf < rf)
         | (StringVal s1, StringVal s2) ->
             failwithf "cannnot compare string values"
         | (VoidVal, VoidVal) ->
@@ -77,9 +77,9 @@ module EvaluatorHelper =
     let isLeftGreaterThenRight (l: Value) (r: Value) =
         match (l, r) with
         | (IntVal li, IntVal ri) ->
-            if li > ri then IntVal 1 else IntVal 0
+            BoolVal (li > ri)
         | (FloatVal lf, FloatVal rf) ->
-            if lf > rf then IntVal 1 else IntVal 0
+            BoolVal (lf > rf)
         | (StringVal s1, StringVal s2) ->
             failwithf "cannnot compare string values"
         | (VoidVal, VoidVal) ->
@@ -89,9 +89,9 @@ module EvaluatorHelper =
     let isLeftEqualToRight (l: Value) (r:Value) =
         match (l, r) with
         | (IntVal li, IntVal ri) ->
-            if li = ri then IntVal 1 else IntVal 0
+            BoolVal (li = ri)
         | (FloatVal lf, FloatVal rf) ->
-            if lf = rf then IntVal 1 else IntVal 0
+            BoolVal (lf = rf)
         | (StringVal s1, StringVal s2) ->
             failwithf "cannnot compare string values"
         | (VoidVal, VoidVal) ->
