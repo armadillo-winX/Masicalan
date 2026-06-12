@@ -10,6 +10,7 @@ type Value =
     | IntVal of int
     | FloatVal of float
     | StringVal of string
+    | BoolVal of bool
     | VoidVal
 
 // Operator : 演算子
