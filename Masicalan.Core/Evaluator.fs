@@ -105,6 +105,7 @@ module Evaluator =
             | IntVal i -> printfn "Int[%d]" i
             | FloatVal f -> printfn "Float[%f]" f
             | StringVal s -> printfn "String[\"%s\"]" s
+            | BoolVal b -> printfn "Bool[%b]" b
             | VoidVal -> printfn "Void[]"
 
             { Environment = env; ReturnValue = None }
