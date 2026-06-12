@@ -2,7 +2,7 @@ let x = 6;
 let y = 3;
 
 let a = x + y;
-if a > 10 then 
+if (a > 10) 
 {
     print "a is greater than 10" ;
 }
@@ -13,4 +13,4 @@ else {
 
 let b = x * y ;
 
-if b > 10 then { print "b is greater than 10" ; } else { print "b is lesser than 10 or equal to 10" ; }
+if (b > 10) { print "b is greater than 10" ; } else { print "b is lesser than 10 or equal to 10" ; }
