@@ -117,12 +117,12 @@ module Parser =
 
     // if 文パーサ
     let parseIf: Parser<Statement, unit> =
-        let thenBranch = pstring "then" >>. spaces >>. parseBlock
+        let parseCondition = between (pstring "(" .>> spaces) (pstring ")" .>> spaces) parseExpression
         let elseBranch = opt (pstring "else" >>. spaces >>. parseBlock)
 
         tuple3
-            (pstring "if" >>. spaces1 >>. parseExpression)
-            thenBranch
+            (pstring "if" >>. spaces >>. parseCondition)
+            parseBlock
             elseBranch
         |>> fun (condition, thenStatement, elseStatement) -> Statement.If (condition, thenStatement, elseStatement)
 
