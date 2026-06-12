@@ -17,7 +17,9 @@ module Parser =
 
     // 数値型リテラルパーサ(float or int)
     let parseNumLiteral : Parser<Expression, unit> =
-        let parseOptions = NumberLiteralOptions.AllowFraction ||| NumberLiteralOptions.AllowExponent
+        let parseOptions = 
+            NumberLiteralOptions.AllowFraction ||| NumberLiteralOptions.AllowExponent ||| 
+            NumberLiteralOptions.AllowPlusSign ||| NumberLiteralOptions.AllowMinusSign
 
         numberLiteral parseOptions "number"
         |>> fun numLit ->  
