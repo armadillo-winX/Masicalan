@@ -128,9 +128,11 @@ module Parser =
 
     // while 文パーサ
     let parseWhile: Parser<Statement, unit> =
+        let parseCondition = between (pstring "(" .>> spaces) (pstring ")" .>> spaces) parseExpression
+
         tuple2
-            (pstring "while" >>. spaces1 >>. parseExpression)
-            (pstring "do" >>. spaces >>. parseBlock)
+            (pstring "while" >>. spaces >>. parseCondition)
+            parseBlock
         |>> fun (condition, stmts) -> Statement.While (condition, stmts)
         
     // 引数リストのパーサ (関数定義)
