@@ -36,16 +36,16 @@ module Evaluator =
             | EqualTo -> EvaluatorHelper.isLeftEqualToRight l r
             | LogAnd ->
                 // 短絡評価
-                if evaluateExpression env left <> IntVal 0 && evaluateExpression env right <> IntVal 0 then
-                    IntVal 1
+                if evaluateExpression env left = BoolVal true && evaluateExpression env right = BoolVal true then
+                    BoolVal true
                 else
-                    IntVal 0
+                    BoolVal false
             | LogOr ->
                 // 短絡評価
-                if evaluateExpression env left <> IntVal 0 || evaluateExpression env right <> IntVal 0 then
-                    IntVal 1
+                if evaluateExpression env left = BoolVal true || evaluateExpression env right = BoolVal true then
+                    BoolVal true
                 else
-                    IntVal 0
+                    BoolVal false
         | CallF (funcName, args) ->
             match env.FunctionsEnv.TryFind(funcName) with
             | Some (paramsList, stmts) -> 
@@ -139,7 +139,7 @@ module Evaluator =
             }
         | If (condition, thenstmt, elsestmt) ->
             let conditionV = evaluateExpression env condition
-            if conditionV <> IntVal 0 then
+            if conditionV = BoolVal true then
                 executeStatement env thenstmt
             else
                 match elsestmt with
@@ -149,7 +149,7 @@ module Evaluator =
             // 条件が true である限り，再帰的に実行し環境を更新
             let rec loop currentEnv =
                 let conditionV = evaluateExpression currentEnv condition
-                if conditionV <> IntVal 0 then
+                if conditionV = BoolVal true then
                     let evalRes = executeStatement currentEnv body
                     match evalRes.ReturnValue with
                     | Some rv -> { Environment = evalRes.Environment ; ReturnValue = evalRes.ReturnValue }
