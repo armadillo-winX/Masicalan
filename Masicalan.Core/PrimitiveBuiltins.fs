@@ -2,7 +2,7 @@ namespace Masicalan.Core
 
 module PrimitiveBuiltins =
 
-    let rec private toStringFuncExecute (arg: Value) =
+    let rec private toStringExecute (arg: Value) =
         match arg with
         | Value.StringVal s ->
             s
@@ -13,7 +13,7 @@ module PrimitiveBuiltins =
         | Value.BoolVal b ->
             $"{b}"
         | Value.ArrayVal a->
-            let elements = List.map toStringFuncExecute a |> String.concat ", "
+            let elements = List.map toStringExecute a |> String.concat ", "
             $"[{elements}]"
         | Value.VoidVal ->
             " "
@@ -21,7 +21,7 @@ module PrimitiveBuiltins =
     // toString(a)
     let private toStringFunc (args: Value list) =
         if List.length args = 1 then
-            toStringFuncExecute args.[0] |> Value.StringVal
+            toStringExecute args.[0] |> Value.StringVal
         elif List.length args = 0 then
             failwithf "toString function need an argument."
         else
