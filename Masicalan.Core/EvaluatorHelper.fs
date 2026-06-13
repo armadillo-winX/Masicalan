@@ -118,7 +118,7 @@ module EvaluatorHelper =
         match v with
         | Value.IntVal i -> $"Int[{i}]"
         | Value.FloatVal f -> $"Float[{f}]"
-        | Value.StringVal s -> $"String[{s}]"
+        | Value.StringVal s -> $"String[\"{s}\"]"
         | Value.BoolVal b -> $"Bool[{b}]"
         | Value.ArrayVal a ->
             let arrayElements = List.map translateToDebugStr a |> String.concat ", "
