@@ -33,7 +33,7 @@ type Statement =
     | While of Expression * Statement                     // while loop
     | If of Expression * Statement * Statement option     // if-else
     | Block of Statement list                             // block
-    | Print of Expression                                 // print
+    | Inspect of Expression                               // print for debug
     | Function of string * string list * Statement        // function
     | Return of Expression                                // return
     | CallFNotReturn of string * Expression list          // call function without return

@@ -99,7 +99,7 @@ module Evaluator =
             let value = evaluateExpression env expr
             let newVarEnvs = env.VariablesEnv.Add(name, value)
 
-            { 
+        Inspect 
                 Environment = { VariablesEnv = newVarEnvs ; FunctionsEnv = env.FunctionsEnv}
                 ReturnValue = None
             }

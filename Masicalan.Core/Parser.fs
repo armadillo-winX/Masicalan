@@ -129,7 +129,7 @@ module Parser =
     let parsePrint : Parser<Statement, unit> =
         pstring "print" >>. wspace >>. parseExpression
         .>> parseSemicolon
-        |>> fun expr -> Statement.Print(expr)
+        |>> fun expr -> Statement.Inspect(expr)
 
     // return 文パーサ
     let parseReturn : Parser<Statement, unit> =
