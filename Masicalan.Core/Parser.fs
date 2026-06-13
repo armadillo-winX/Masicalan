@@ -77,6 +77,10 @@ module Parser =
         parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs)
         |>> fun (funcName, args) -> Expression.CallF(funcName, args)
 
+    // インデックスアクセスパーサ
+    let parseIndexSuffix =
+        between (pstring "[" .>> wspace) (pstring "]" .>> wspace) parseExpression
+
     // かっこでくくられた式 or リテラル or 変数 のパース
     let parseTerm = choice [
         attempt parseNumLiteral
