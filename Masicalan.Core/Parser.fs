@@ -63,6 +63,11 @@ module Parser =
     let operPrecParser = OperatorPrecedenceParser<Expression, unit, unit>()
     let parseExpression = operPrecParser.ExpressionParser
 
+    // 配列リテラルのパーサ
+    let parseArrayLit : Parser<Expression, unit> =
+        between (pstring "[" .>> wspace) (pstring "]" .>> wspace) (sepBy (parseExpression .>> wspace) (pstring "," .>> wspace))
+        |>> Expression.ArrayLit
+
     // 引数リストのパーサ
     let parseArgs : Parser<Expression list, unit> =
         sepBy (parseExpression .>> wspace) (pstring "," .>> wspace)
