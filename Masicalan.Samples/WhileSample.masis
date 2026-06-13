@@ -2,7 +2,7 @@ let i = 0 ;
 while (i < 10) {
     i <- i + 1 ;
 }
-print i ;
+inspect i ;
 
 let k = 0;
-while (k < 20) { k <- k +1 ; print k ; }
+while (k < 20) { k <- k +1 ; inspect k ; }
