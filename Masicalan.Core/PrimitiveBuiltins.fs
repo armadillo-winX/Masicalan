@@ -9,3 +9,8 @@ module PrimitiveBuiltins =
             Value.VoidVal
         |_-> 
             failwithf "Cannot print non-string value"
+
+    let create () =
+        Map[
+        ("printn"), (["s"], Statement.CallNativeF (printFunc, [Var "s"]))
+        ]
