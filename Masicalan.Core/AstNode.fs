@@ -37,4 +37,4 @@ type Statement =
     | Function of string * string list * Statement        // function
     | Return of Expression                                // return
     | CallFNotReturn of string * Expression list          // call function without return
-    | CallNativeF of (Value list -> Value) * Value list   // call native function
+    | CallNativeF of (Value list -> Value) * Expression list   // call native function
