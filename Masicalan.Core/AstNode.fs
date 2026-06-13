@@ -24,7 +24,6 @@ type Expression =
     | Var of string                                         // variable reference
     | Binary of Expression * Operator * Expression          // binary operation
     | CallF of string * Expression list                     // call function
-    | CallNativeF of (Value list -> Value)                  // call native function
     | AccessArrIndex of Expression * Expression             // access array index
 
 // Statement : 文: 実行することで環境を変化させる(値は返さない)
@@ -38,4 +37,4 @@ type Statement =
     | Function of string * string list * Statement        // function
     | Return of Expression                                // return
     | CallFNotReturn of string * Expression list          // call function without return
-    | CallNativeFNotReturn of (Value list -> unit)        // call native function without return
+    | CallNativeF of (Value list -> Value)                // call native function
