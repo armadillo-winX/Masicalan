@@ -2,8 +2,7 @@ namespace Masicalan.Core
 
 module PrimitiveBuiltins =
 
-    // toString(a)
-    let rec private toStringFunc (args: Value list) =
+    let rec private toStringFuncExecute (args: Value list) =
         match args with
         |[Value.StringVal s] ->
             s
@@ -14,11 +13,15 @@ module PrimitiveBuiltins =
         |[Value.BoolVal b] ->
             $"{b}"
         |[Value.ArrayVal a]->
-            let elements = List.map toStringFunc [a] |> String.concat ", "
+            let elements = List.map toStringFuncExecute [a] |> String.concat ", "
             $"[{elements}]"
         |[Value.VoidVal] ->
             " "
         |_ -> failwithf "toString function cannot recieive multiple arguments."
+    
+    // toString(a)
+    let private toStringFunc (args: Value list) =
+        toStringFuncExecute args |> Value.StringVal
 
     // getLength(a)
     let private getLengthFunc (args: Value list) =
