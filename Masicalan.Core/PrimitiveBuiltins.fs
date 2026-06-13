@@ -23,5 +23,6 @@ module PrimitiveBuiltins =
 
     let create () =
         Map[
+        ("getLength"), (["a"], Statement.CallNativeF (getLengthFunc, [Var "a"]))
         ("printn"), (["s"], Statement.CallNativeF (printFunc, [Var "s"]))
         ]
