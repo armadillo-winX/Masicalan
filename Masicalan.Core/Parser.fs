@@ -92,7 +92,10 @@ module Parser =
         between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseExpression
     ]
 
-    operPrecParser.TermParser <- parseTerm .>> wspace
+    operPrecParser.TermParser 
+        <- parseTerm .>> wspace .>>. many parseIndexSuffix
+        |>> fun (term, suff) ->
+                List.fold (fun arr index -> Expression.AccessArrIndex(arr, index)) term suff
 
 
     // 算術，比較演算子の登録
