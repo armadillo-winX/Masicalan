@@ -2,7 +2,7 @@ namespace Masicalan.Core
 
 module PrimitiveBuiltins =
     
-    let printFunc (args: Value list) =
+    let private printFunc (args: Value list) =
         match args with
         |[Value.StringVal s] ->
             printfn "%s" s |> ignore
