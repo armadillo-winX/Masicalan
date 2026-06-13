@@ -11,6 +11,7 @@ type Value =
     | FloatVal of float
     | StringVal of string
     | BoolVal of bool
+    | ArrayVal of Value list
     | VoidVal
 
 // Operator : 演算子
