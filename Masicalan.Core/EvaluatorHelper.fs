@@ -122,5 +122,5 @@ module EvaluatorHelper =
         | Value.BoolVal b -> $"Bool[{b}]"
         | Value.ArrayVal a ->
             let arrayElements = List.map translateToDebugStr a |> String.concat ", "
-            $"[{arrayElements}]"
+            $"Array[{arrayElements}]"
         | Value.VoidVal -> "Void"
