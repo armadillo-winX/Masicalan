@@ -114,13 +114,9 @@ module Evaluator =
                 ReturnValue = None
             }
         | Print expr ->
-            let value = evaluateExpression env expr
-            match value with
-            | IntVal i -> printfn "Int[%d]" i
-            | FloatVal f -> printfn "Float[%f]" f
-            | StringVal s -> printfn "String[\"%s\"]" s
-            | BoolVal b -> printfn "Bool[%b]" b
-            | VoidVal -> printfn "Void[]"
+            evaluateExpression env expr 
+            |> EvaluatorHelper.translateToDebugStr 
+            |> printfn "%s" |> ignore
 
             { Environment = env; ReturnValue = None }
         | Function (funcName, paramsList, stmts) ->
