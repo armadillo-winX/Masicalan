@@ -20,9 +20,11 @@ type Operator = Add | Sub | Mul | Div | Pow | LessThan | GreaterThan | EqualTo |
 // Expression : 式: 評価(evaluate)することで値になる
 type Expression =
     | ValueLit of Value                                     // value literal
+    | ArrayLit of Expression list                           // array literal
     | Var of string                                         // variable reference
     | Binary of Expression * Operator * Expression          // binary operation
     | CallF of string * Expression list                     // call function
+    | AccessArrIndex of Expression * Expression             // access array index
 
 // Statement : 文: 実行することで環境を変化させる(値は返さない)
 type Statement = 
