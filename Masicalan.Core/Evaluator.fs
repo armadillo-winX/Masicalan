@@ -173,5 +173,6 @@ module Evaluator =
             evaluateExpression env (CallF(funcName, args)) |> ignore
             { Environment = env; ReturnValue = None}
         | CallNativeF (f, args) ->
-            let result = f args
+            let argValues = List.map (evaluateExpression env) args
+            let result = f argValues
             { Environment = env; ReturnValue = result |> Option.ofObj }
