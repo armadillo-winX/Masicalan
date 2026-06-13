@@ -172,3 +172,6 @@ module Evaluator =
         | CallFNotReturn (funcName, args) ->
             evaluateExpression env (CallF(funcName, args)) |> ignore
             { Environment = env; ReturnValue = None}
+        | CallNativeF (f, args) ->
+            let result = f args
+            { Environment = env; ReturnValue = result |> Option.ofObj }
