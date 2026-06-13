@@ -18,6 +18,9 @@ module Evaluator =
     let rec evaluateExpression (env: EnvironmentState) (expr: Expression) =
         match expr with
         | ValueLit n -> n
+        | ArrayLit a -> 
+            let values = List.map (evaluateExpression env) a
+            Value.ArrayVal values
         | Var name ->
             match env.VariablesEnv.TryFind(name) with
             | Some v -> v
@@ -69,6 +72,18 @@ module Evaluator =
                 | None -> VoidVal
                 
             | None -> funcName |> failwithf "undefined function: %s"
+        | AccessArrIndex (arrExpr, indexExpr) ->
+            let arrVal = evaluateExpression env arrExpr
+            let indexV = evaluateExpression env indexExpr
+            match arrVal, indexV with
+            | (Value.ArrayVal a, Value.IntVal i) ->
+                if i < 0 || i >= List.length a then
+                    failwithf "Index out of ranges: %d" i
+                a.[i]
+            | (Value.ArrayVal a , _) ->
+                failwithf "Array index must be an Integer."
+            | (_, _) ->
+                failwithf "Cannot apply indexing to non-array."
         
     // 文(Statement) を実行する -> env(環境) を更新する
     and executeStatement (env: EnvironmentState) (stmt: Statement) =
