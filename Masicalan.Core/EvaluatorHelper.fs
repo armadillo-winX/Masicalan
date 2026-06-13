@@ -113,3 +113,14 @@ module EvaluatorHelper =
         | (VoidVal, VoidVal) ->
             failwithf "cannot compare void values"
         |_-> failwithf "cannot different type values"
+
+    let rec translateToDebugStr (v:Value) =
+        match v with
+        | Value.IntVal i -> $"Int[{i}]"
+        | Value.FloatVal f -> $"Float[{f}]"
+        | Value.StringVal s -> $"String[{s}]"
+        | Value.BoolVal b -> $"Bool[{b}]"
+        | Value.ArrayVal a ->
+            let arrayElements = List.map translateToDebugStr a |> String.concat ", "
+            $"[{arrayElements}]"
+        | Value.VoidVal -> "Void"
