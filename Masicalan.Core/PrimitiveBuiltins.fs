@@ -20,7 +20,12 @@ module PrimitiveBuiltins =
     
     // toString(a)
     let private toStringFunc (args: Value list) =
-        toStringFuncExecute args |> Value.StringVal
+        if List.length args = 1 then
+            toStringFuncExecute args.[0] |> Value.StringVal
+        elif List.length args = 0 then
+            failwithf "toString function need an argument."
+        else
+            failwithf "toString function cannot recieve multiple arguments."
 
     // getLength(a)
     let private getLengthFunc (args: Value list) =
