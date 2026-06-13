@@ -1,6 +1,16 @@
 namespace Masicalan.Core
 
 module PrimitiveBuiltins =
+
+    // getLength(a)
+    let private getLengthFunc (args: Value list) =
+        match args with
+        |[Value.StringVal s] ->
+            IntVal s.Length
+        |[Value.ArrayVal a] ->
+            a |> List.length |> IntVal
+        |_->
+            failwithf "\"Length\" is defined only for strings or arrays."
     
     // printn(s)
     let private printFunc (args: Value list) =
