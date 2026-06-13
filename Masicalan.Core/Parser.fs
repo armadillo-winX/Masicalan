@@ -125,9 +125,9 @@ module Parser =
         .>> parseSemicolon
         |>> fun (varName, expr) -> Statement.Assign(varName, expr)
 
-    // print 文のパーサ
+    // inspect 文のパーサ
     let parsePrint : Parser<Statement, unit> =
-        pstring "print" >>. wspace >>. parseExpression
+        pstring "inspect" >>. wspace >>. parseExpression
         .>> parseSemicolon
         |>> fun expr -> Statement.Inspect(expr)
 
