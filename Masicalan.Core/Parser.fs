@@ -82,6 +82,7 @@ module Parser =
         attempt parseNumLiteral
         attempt parseStringLiteral
         attempt parseBoolLiteral
+        attempt parseArrayLit
         attempt parseCallF
         parseVarible
         between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseExpression
