@@ -10,7 +10,7 @@
 	  <VersionPrefix>0.1.0</VersionPrefix>
 	  <VersionSuffix>preview.0</VersionSuffix>
 	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-	  <AssemblyName>mscl</AssemblyName>
+	  <AssemblyName>masic</AssemblyName>
 	  <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 
