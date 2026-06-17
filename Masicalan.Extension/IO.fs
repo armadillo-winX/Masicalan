@@ -21,3 +21,11 @@ module IO =
             Value.VoidVal
         |_->
             failwithf "writeToFile: arguments error"
+
+    // readFromFile(filePath)
+    let private readFromFileExtFunc (args: Value list) =
+        match args with
+        |[Value.StringVal filePath] ->
+            File.ReadAllText(filePath) |> Value.StringVal
+        |_->
+            failwithf "readFromFile: arguments error"
