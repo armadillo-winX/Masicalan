@@ -5,7 +5,7 @@ open System.IO
 
 module IO =
     
-    // fileExists(string fileName)
+    // fileExists(fileName)
     let private fileExistsExtFunc (args: Value list) =
         match args with
         |[Value.StringVal fileName] ->
