@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="IO.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
 
