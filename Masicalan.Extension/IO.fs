@@ -37,3 +37,12 @@ module IO =
             File.ReadAllText(filePath) |> Value.StringVal
         |_->
             failwithf "readFromFile: arguments error"
+
+    // copyFile(sourceFilePath, destFilePath, overwrite)
+    let private copyFileExtFunc (args: Value list) =
+        match args with
+        |[Value.StringVal sourceFilePath; Value.StringVal destFilePath; Value.BoolVal overwrite] ->
+            File.Copy(sourceFilePath, destFilePath, overwrite)
+            Value.VoidVal
+        |_->
+            failwithf "copyFile: arguments error"
