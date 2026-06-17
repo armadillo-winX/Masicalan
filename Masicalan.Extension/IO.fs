@@ -54,4 +54,4 @@ module IO =
             File.Move(sourceFilePath, destFilePath, overwrite)
             Value.VoidVal
         |_->
-            failwithf "copyFile: arguments error"
+            failwithf "moveFile: arguments error"
