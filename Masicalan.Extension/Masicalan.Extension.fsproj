@@ -17,4 +17,8 @@
     <Compile Include="Library.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Masicalan.Core\Masicalan.Core.fsproj" />
+  </ItemGroup>
+
 </Project>
