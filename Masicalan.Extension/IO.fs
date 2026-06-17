@@ -13,6 +13,14 @@ module IO =
         |_-> 
             failwithf "fileExists: arguments error"
 
+    // directoryExists(directoryName)
+    let private directoryExistsExtFunc (args: Value list) =
+        match args with
+        |[Value.StringVal directoryName] ->
+            Directory.Exists(directoryName) |> Value.BoolVal
+        |_->
+            failwithf "directoryExists: argyments error"
+
     // writeToFile(filePath, data)
     let private writeToFileExtFunc (args: Value list) =
         match args with
