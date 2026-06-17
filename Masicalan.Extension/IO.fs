@@ -46,3 +46,12 @@ module IO =
             Value.VoidVal
         |_->
             failwithf "copyFile: arguments error"
+
+    // moveFile(sourceFilePath, destFilePath, overwrite)
+    let private moveFileExtFunc (args: Value list) =
+        match args with
+        |[Value.StringVal sourceFilePath; Value.StringVal destFilePath; Value.BoolVal overwrite] ->
+            File.Move(sourceFilePath, destFilePath, overwrite)
+            Value.VoidVal
+        |_->
+            failwithf "copyFile: arguments error"
