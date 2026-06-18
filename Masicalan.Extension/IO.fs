@@ -55,3 +55,13 @@ module IO =
             Value.VoidVal
         |_->
             failwithf "moveFile: arguments error"
+
+    let createExtEnv () =
+        Map[
+        ("fileExists"), (["fileName"], Statement.CallNativeF (fileExistsExtFunc, [Var "fileName"]))
+        ("directoryExists"), (["directoryName"], Statement.CallNativeF (directoryExistsExtFunc, [Var "directoryName"]))
+        ("writeToFile"), (["filePath"; "data"], Statement.CallNativeF (writeToFileExtFunc, [Var "filePath"; Var "data"]))
+        ("readFromFile"), (["filePath"], Statement.CallNativeF (readFromFileExtFunc, [Var "filePath"]))
+        ("copyFile"), (["sourceFilePath"; "destFilePath"; "overwrite"], Statement.CallNativeF (copyFileExtFunc, [Var "sourceFilePath"; Var "destFilePath"; Var "overwrite"]))
+        ("moveFile"), (["sourceFilePath"; "destFilePath"; "overwrite"], Statement.CallNativeF (moveFileExtFunc, [Var "sourceFilePath"; Var "destFilePath"; Var "overwrite"]))
+        ]
