@@ -1,5 +1,6 @@
 ﻿open FParsec
 open Masicalan.Core
+open Masicalan.Extension
 open System
 open System.Diagnostics
 open System.IO
@@ -15,6 +16,10 @@ let printAst script =
 
 let runInterpreter script =
     Interpreter.Run script |> ignore
+
+let runIntprtWithStdExt script =
+    let ioExt = IO.createExtEnv ()
+    Interpreter.RunWithExt script ioExt |> ignore
 
 let runInterprAndPrintEnv script =
     let env = Interpreter.Run script
