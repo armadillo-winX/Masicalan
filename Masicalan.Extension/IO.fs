@@ -3,7 +3,7 @@ namespace Masicalan.Extension
 open Masicalan.Core
 open System.IO
 
-module IO =
+module IOExtension =
     
     // fileExists(fileName)
     let private fileExistsExtFunc (args: Value list) =
