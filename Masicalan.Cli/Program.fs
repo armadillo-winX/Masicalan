@@ -52,7 +52,7 @@ printfn "-----------------------------------------------------------------------
 
 while true do
     printfn "[0] Run script from a script file"
-    printfn "[1] Run sample script files"
+    printfn "[2] Run sample script files"
     printfn "[x] Exit"
     printfn "Enter operation:"
     let input = Console.ReadLine()
@@ -64,7 +64,7 @@ while true do
             readScriptFile pathInput |> runInterpreter
         with
         |_ as ex -> printfn "%s" ex.Message
-    | "1" -> 
+    | "2" -> 
         let files = Directory.GetFiles(sampleCodesDirectory, "*.masis", SearchOption.TopDirectoryOnly)
         let filesOption = files |> Option.ofObj
         match filesOption with
