@@ -52,6 +52,7 @@ printfn "-----------------------------------------------------------------------
 
 while true do
     printfn "[0] Run script from a script file"
+    printfn "[1] Run script from a script file with Standard Extension"
     printfn "[2] Run sample script files"
     printfn "[x] Exit"
     printfn "Enter operation:"
@@ -62,6 +63,13 @@ while true do
         let pathInput = Console.ReadLine()
         try
             readScriptFile pathInput |> runInterpreter
+        with
+        |_ as ex -> printfn "%s" ex.Message
+    | "1" ->
+        printfn "Enter script file path:"
+        let pathInput = Console.ReadLine()
+        try
+            readScriptFile pathInput |> runIntprtWithStdExt
         with
         |_ as ex -> printfn "%s" ex.Message
     | "2" -> 
