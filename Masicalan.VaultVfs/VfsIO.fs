@@ -42,6 +42,19 @@ module VfsIO =
         for b in hash do sb.AppendFormat("{0:x2}", b) |> ignore
         sb.ToString()
 
+    let private tryFindFileElement (doc:XDocument) (normalized:string) : XElement option =
+        if isNull doc || isNull doc.Root then None
+        else
+            let filesEl = doc.Root.Element(XName.Get("Files"))
+            if isNull filesEl then None
+            else
+                filesEl.Elements(XName.Get("File"))
+                |> Seq.tryFind (fun e ->
+                    let p = (e.Attribute(XName.Get("path")) |> fun a -> if isNull a then null else a.Value)
+                    let n = (e.Attribute(XName.Get("name")) |> fun a -> if isNull a then null else a.Value)
+                    (not (isNull p) && String.Equals(p, normalized, StringComparison.OrdinalIgnoreCase)) ||
+                    (not (isNull n) && String.Equals(n, Path.GetFileName(normalized), StringComparison.OrdinalIgnoreCase)) )
+
     let private vfsAttributeToString (a: VfsAttribute) : string =
         match a with
         | VfsAttribute.ReadOnly -> "ReadOnly"
@@ -346,6 +359,20 @@ module VfsIO =
         use out = new MemoryStream()
         s.CopyTo(out)
         let bytes = out.ToArray()
+        // integrity check against manifest if present
+        let manifestEntry = zip.GetEntry("manifest.xml")
+        if not (isNull manifestEntry) then
+            use msr = manifestEntry.Open()
+            let doc = XDocument.Load(msr)
+            match tryFindFileElement doc normalized with
+            | Some fe ->
+                let hAttr = fe.Attribute(XName.Get("hash"))
+                if not (isNull hAttr) then
+                    let expected = hAttr.Value
+                    let actual = sha256hex bytes
+                    if not (String.Equals(expected, actual, StringComparison.OrdinalIgnoreCase)) then
+                        invalidOp (sprintf "Integrity check failed for '%s': expected hash %s but found %s" normalized expected actual)
+            | None -> ()
         Encoding.UTF8.GetString(bytes)
 
     /// Edit an existing script inside the vault. entryPath uses same rules as Read.
@@ -391,18 +418,22 @@ module VfsIO =
                     doc.Root.Add(f)
                     f
                 else fe
-
-        let fileEl =
-            filesEl.Elements(XName.Get("File"))
-            |> Seq.tryFind (fun e ->
-                let p = (e.Attribute(XName.Get("path")) |> fun a -> if isNull a then null else a.Value)
-                let n = (e.Attribute(XName.Get("name")) |> fun a -> if isNull a then null else a.Value)
-                (not (isNull p) && String.Equals(p, normalized, StringComparison.OrdinalIgnoreCase)) ||
-                (not (isNull n) && String.Equals(n, Path.GetFileName(normalized), StringComparison.OrdinalIgnoreCase)) )
-
-        match fileEl with
+        // find the file element and perform integrity check before editing
+        match tryFindFileElement doc normalized with
         | None -> invalidOp "File entry not found in manifest.xml"
         | Some fe ->
+            // compute current entry hash
+            use curStream = entry.Open()
+            use curMs = new MemoryStream()
+            curStream.CopyTo(curMs)
+            let curBytes = curMs.ToArray()
+            let curHash = sha256hex curBytes
+            let hAttr = fe.Attribute(XName.Get("hash"))
+            if not (isNull hAttr) then
+                let expected = hAttr.Value
+                if not (String.Equals(expected, curHash, StringComparison.OrdinalIgnoreCase)) then
+                    invalidOp (sprintf "Integrity check failed for '%s': expected hash %s but found %s" normalized expected curHash)
+
             let attr = fe.Attribute(XName.Get("attribute"))
             let attrVal = if isNull attr then String.Empty else attr.Value
             if String.Equals(attrVal, "ReadOnly", StringComparison.OrdinalIgnoreCase) then invalidOp "Cannot edit read-only file"
