@@ -243,7 +243,6 @@ module VfsIO =
 
     /// Delete a script from the vault by its internal path.
     /// entryPath rules same as Read/Edit.
-    /// Deletion is denied when the manifest records attribute="ReadOnly" for the file.
     let Delete (vaultPath:string) (entryPath:string) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
@@ -300,9 +299,6 @@ module VfsIO =
 
         match fileElOpt with
         | Some fe ->
-            let attr = fe.Attribute(XName.Get("attribute"))
-            let attrVal = if isNull attr then String.Empty else attr.Value
-            if String.Equals(attrVal, "ReadOnly", StringComparison.OrdinalIgnoreCase) then invalidOp "Cannot delete read-only file"
             // remove from manifest
             fe.Remove()
         | None -> ()
