@@ -15,12 +15,12 @@ module Interpreter =
         | Failure(error, _, _) ->
             failwithf "failed: %s" error
 
-    let RunWithExt (script: string) (extEnv: Map<string, (string list * Statement)>) =
+    let RunWithExt (script: string) (extVarEnv: Map<string, Value>) (extFunEnv: Map<string, (string list * Statement)>) =
         match run Parser.parseProgram script with
         | Success(ast, _, _) ->
             let primEnv = PrimitiveBuiltins.create()
-            let initFuncEnv = Map.fold (fun acc key value -> Map.add key value acc) primEnv extEnv
-            let initEnv : Evaluator.EnvironmentState = { VariablesEnv = Map.empty; FunctionsEnv = initFuncEnv }
+            let initFuncEnv = Map.fold (fun acc key value -> Map.add key value acc) primEnv extFunEnv
+            let initEnv : Evaluator.EnvironmentState = { VariablesEnv = extVarEnv; FunctionsEnv = initFuncEnv }
             List.fold
                 (fun env stmt ->
                     let evalRes = Evaluator.executeStatement env stmt
