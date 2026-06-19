@@ -53,7 +53,7 @@ module VfsManager =
     /// manifest.xml and an empty scripts/ directory. The ZIP bytes are
     /// encrypted using DPAPI (CurrentUser) and written with a small
     /// header so the file can be recognized.
-    let create (outputPath: string) : string =
+    let Create (outputPath: string) : string =
         if String.IsNullOrWhiteSpace outputPath then
             invalidArg "outputPath" "outputPath must be a non-empty path."
 
