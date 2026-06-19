@@ -9,11 +9,6 @@ open System.Xml.Linq
 
 module VfsIO =
 
-    // Constants used for MASIV file format and DPAPI
-    let private HeaderMagic = "MASIV"
-    let private VersionByte = byte 1
-    let private Entropy = Encoding.UTF8.GetBytes("Masicalan.VaultVfs:entropy:v1")
-
     let private ensureExtension (path:string) =
         if Path.GetExtension path = ".masiv" then path else Path.ChangeExtension(path, ".masiv")
 

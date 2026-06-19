@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="VfsConstants.fs" />
     <Compile Include="VfsAttribute.fs" />
     <Compile Include="VfsIO.fs" />
     <Compile Include="VfsManager.fs" />
