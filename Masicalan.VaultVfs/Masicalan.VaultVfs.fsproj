@@ -16,4 +16,8 @@
     <Compile Include="VfsManager.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.9" />
+  </ItemGroup>
+
 </Project>
