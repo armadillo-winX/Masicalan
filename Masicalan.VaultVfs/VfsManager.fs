@@ -36,7 +36,7 @@ module VfsManager =
         XElement(XName.Get("Vault"),
                 XAttribute(XName.Get("Name"), "Masicalan Vault VFS"),
                 XAttribute(XName.Get("Version"), "1"),
-                XAttribute(XName.Get("CreatedTime"), DateTime.Now.ToString("o")) )
+                XAttribute(XName.Get("CreatedUtcTime"), DateTime.UtcNow.ToString("o")) )
 
     // Build minimal manifest XML
     let private buildManifest () =
