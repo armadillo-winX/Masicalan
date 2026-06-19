@@ -372,7 +372,10 @@ module VfsIO =
                     let actual = sha256hex bytes
                     if not (String.Equals(expected, actual, StringComparison.OrdinalIgnoreCase)) then
                         invalidOp (sprintf "Integrity check failed for '%s': expected hash %s but found %s" normalized expected actual)
-            | None -> ()
+            | None -> 
+                invalidOp "File entry not found in manifest.xml"
+        else
+            invalidOp "manifest.xml missing in vault"
         Encoding.UTF8.GetString(bytes)
 
     /// Edit an existing script inside the vault. entryPath uses same rules as Read.
