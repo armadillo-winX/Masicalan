@@ -5,6 +5,7 @@ open System.IO
 open System.IO.Compression
 open System.Text
 open System.Security.Cryptography
+open System.Runtime.InteropServices
 open System.Xml.Linq
 
 module VfsManager =
@@ -52,7 +53,7 @@ module VfsManager =
     /// manifest.xml and an empty scripts/ directory. The ZIP bytes are
     /// encrypted using DPAPI (CurrentUser) and written with a small
     /// header so the file can be recognized.
-    let Create (outputPath: string) : string =
+    let Create (outputPath: string) (entropyName: string) : string =
         if String.IsNullOrWhiteSpace outputPath then
             invalidArg "outputPath" "outputPath must be a non-empty path."
 
@@ -63,7 +64,8 @@ module VfsManager =
         // Build everything and write to disk with a small header
         let manifest = buildManifest()
         let zipBytes = createZip(manifest)
-        let encrypted = protect(zipBytes)
+        let encrypted = 
+            entropyName |> Encoding.ASCII.GetBytes |> protect zipBytes
 
         // File layout: ASCII "MASIV" (5 bytes) + version byte (1) + encrypted payload
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
