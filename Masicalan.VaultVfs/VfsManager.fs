@@ -29,7 +29,7 @@ module VfsManager =
     // Encrypt bytes using DPAPI (CurrentUser). We include a fixed optional
     // entropy so the protection is slightly bound to this application.
     let private protect (plain: byte[]) =
-        let entropy = Encoding.UTF8.GetBytes("Masicalan.VaultVfs:entropy:v1")
+        let entropy = VfsConstans.DefaultEntropy
         ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
 
     // Build minimal manifest XML
@@ -67,7 +67,7 @@ module VfsManager =
         let encrypted = protect(zipBytes)
 
         // File layout: ASCII "MASIV" (5 bytes) + version byte (1) + encrypted payload
-        let header = Encoding.ASCII.GetBytes("MASIV")
+        let header = Encoding.ASCII.GetBytes(VfsConstans.HeaderMagic)
         let version = [| byte 1 |]
 
         use outFs = new FileStream(outPath, FileMode.Create, FileAccess.Write, FileShare.None)
