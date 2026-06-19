@@ -273,7 +273,7 @@ module VfsIO =
         let manifestEntry = zip.GetEntry("manifest.xml")
         let doc =
             if isNull manifestEntry then
-                let d = XDocument(XElement(XName.Get("Vault"), XAttribute(XName.Get("Name"), "Masicalan Vault VFS"), XAttribute(XName.Get("Version"), "1"), XAttribute(XName.Get("CreatedTime"), DateTime.Now.ToString("o"))))
+                let d = VfsManager.buildManifestMetaInfo |> XDocument
                 d.Root.Add(XElement(XName.Get("ScriptsDirectory")))
                 let files = XElement(XName.Get("Files"))
                 d.Root.Add(files)
