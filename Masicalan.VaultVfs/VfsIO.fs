@@ -116,7 +116,7 @@ module VfsIO =
         let manifestEntry = zip.GetEntry("manifest.xml")
         if isNull manifestEntry then
             // create minimal manifest if missing
-            let doc = XDocument(XElement(XName.Get("Vault"), XAttribute(XName.Get("name"), "Masicalan Vault VFS"), XAttribute(XName.Get("version"), "1"), XAttribute(XName.Get("createdUtc"), DateTime.UtcNow.ToString("o"))))
+            let doc = VfsManager.buildManifestMetaInfo |> XDocument
             doc.Root.Add(XElement(XName.Get("ScriptsDirectory")))
             doc.Root.Add(XElement(XName.Get("Files")))
             let me = zip.CreateEntry("manifest.xml")
