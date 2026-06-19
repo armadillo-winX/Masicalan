@@ -5,7 +5,6 @@ open System.IO
 open System.IO.Compression
 open System.Text
 open System.Security.Cryptography
-open System.Runtime.InteropServices
 open System.Xml.Linq
 
 module VfsManager =
