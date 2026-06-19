@@ -61,15 +61,12 @@ module VfsIO =
     /// content: script content as string
     /// attribute: one of "ReadOnly", "Editable", "Executable"
     /// Returns the vaultPath on success.
-    let Add (vaultPath:string) (directory:string) (fileName:string) (content:string) (attribute:string) : string =
+    let Add (vaultPath:string) (directory:string) (fileName:string) (content:string) (attribute:VfsAttribute) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace fileName then invalidArg "fileName" "fileName must be provided"
         if String.IsNullOrWhiteSpace content then invalidArg "content" "content must be provided"
 
-        let attr =
-            match attribute with
-            | "ReadOnly" | "Editable" | "Executable" -> attribute
-            | _ -> invalidArg "attribute" "attribute must be one of: ReadOnly, Editable, Executable"
+        let attr = attribute |> vfsAttributeToString
 
         let vault = ensureExtension vaultPath
 
