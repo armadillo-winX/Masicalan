@@ -77,3 +77,6 @@ module VfsManager =
 
         outFs.Flush()
         outPath
+
+    let CreateSimple (outputPath: string) =
+        Create outputPath VfsConstants.DefaultEntropyName
