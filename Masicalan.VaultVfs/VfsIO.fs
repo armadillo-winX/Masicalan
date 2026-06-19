@@ -29,11 +29,11 @@ module VfsIO =
         if r <> remaining then invalidOp "Failed to read encrypted payload."
         payload
 
-    let private decryptPayload (encrypted:byte[]) : byte[] =
-        ProtectedData.Unprotect(encrypted, VfsConstants.DefaultEntropy, DataProtectionScope.CurrentUser)
+    let private decryptPayload (encrypted:byte[]) (entropy: byte[]) : byte[] =
+        ProtectedData.Unprotect(encrypted, entropy, DataProtectionScope.CurrentUser)
 
-    let private encryptPayload (plain:byte[]) : byte[] =
-        ProtectedData.Protect(plain, VfsConstants.DefaultEntropy, DataProtectionScope.CurrentUser)
+    let private encryptPayload (plain:byte[]) (entropy: byte[]) : byte[] =
+        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
 
     let private sha256hex (data:byte[]) : string =
         use sha = SHA256.Create()
