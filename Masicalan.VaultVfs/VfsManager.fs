@@ -31,13 +31,17 @@ module VfsManager =
     let private protect (plain: byte[]) (entropy: byte[]) =
         ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
 
-    // Build minimal manifest XML
-    let private buildManifest () =
-        let vault =
-            XElement(XName.Get("Vault"),
+    // Create manifest XML meta information
+    let internal buildManifestMetaInfo () =
+        XElement(XName.Get("Vault"),
                 XAttribute(XName.Get("Name"), "Masicalan Vault VFS"),
                 XAttribute(XName.Get("Version"), "1"),
                 XAttribute(XName.Get("CreatedTime"), DateTime.Now.ToString("o")) )
+
+    // Build minimal manifest XML
+    let private buildManifest () =
+        let vault =
+            buildManifestMetaInfo ()
 
         // container elements for future entries
         vault.Add(XElement(XName.Get("ScriptsDirectory")))
