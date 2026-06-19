@@ -36,3 +36,9 @@ module ProcessExtension =
             |> Value.IntVal
         |_->
             failwithf "start: arguments error"
+
+    let createExtEnv () =
+        Map[
+        ("start"), (["filePath"], Statement.CallNativeF (startExFunc, [Var "filePath"]))
+        ("startWithArgs"), (["filePath"; "args"], Statement.CallNativeF (startWithArgsExFunc, [Var "filePath"; Var "args"]))
+        ]
