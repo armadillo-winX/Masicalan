@@ -17,6 +17,7 @@ module VfsManager =
         let m = zip.CreateEntry("manifest.xml", CompressionLevel.Optimal)
         use entryStream = m.Open()
         entryStream.Write(manifestBytes, 0, manifestBytes.Length)
+        entryStream.Dispose()
 
         // add an empty scripts directory entry (name ends with '/')
         zip.CreateEntry("scripts/") |> ignore
