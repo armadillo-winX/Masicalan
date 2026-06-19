@@ -97,7 +97,8 @@ module VfsIO =
         let entryFilePath = entryDirPath + fileName
 
         // Open the zip in update mode and modify
-        use ms = new MemoryStream(zipBytes)
+        use ms = new MemoryStream()
+        ms.Write(zipBytes, 0, zipBytes.Length)
         use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
 
         // ensure scripts/ and target dir entries exist
@@ -271,7 +272,8 @@ module VfsIO =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
             if p.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase) then p else sprintf "scripts/%s" p
 
-        use ms = new MemoryStream(zipBytes)
+        use ms = new MemoryStream()
+        ms.Write(zipBytes, 0, zipBytes.Length)
         use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
 
         let entry = zip.GetEntry(normalized)
@@ -409,7 +411,8 @@ module VfsIO =
         let contentBytes = Encoding.UTF8.GetBytes(newContent)
         let newHash = sha256hex contentBytes
 
-        use ms = new MemoryStream(zipBytes)
+        use ms = new MemoryStream()
+        ms.Write(zipBytes, 0, zipBytes.Length)
         use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
 
         let entry = zip.GetEntry(normalized)
