@@ -6,7 +6,7 @@ open System.Diagnostics
 
 module ProcessExtension =
 
-    // start
+    // start(filePath)
     let private startExFunc (args: Value list) =
         match args with
         | [Value.StringVal filePath] ->
