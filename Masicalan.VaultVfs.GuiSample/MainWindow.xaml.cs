@@ -60,6 +60,7 @@ namespace Masicalan.VaultVfs.GuiSample
 
                 try
                 {
+                    ScriptFilesListBox.Items.Clear();
                     string[] files = VfsIO.GetScriptFiles(PathBox.Text, this._entropyName);
                     foreach (string file in files)
                     {
@@ -95,6 +96,7 @@ namespace Masicalan.VaultVfs.GuiSample
                             PathBox.Text, this._entropyName, "scripts/", Path.GetFileName(scriptFile), script, VfsAttribute.Executable
                             );
 
+                        ScriptFilesListBox.Items.Clear();
                         string[] files = VfsIO.GetScriptFiles(PathBox.Text, this._entropyName);
                         foreach (string file in files)
                         {
