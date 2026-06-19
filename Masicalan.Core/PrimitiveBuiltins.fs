@@ -1,6 +1,6 @@
 namespace Masicalan.Core
 
-module PrimitiveBuiltins =
+module PrimitiveExtension =
 
     let rec private toStringExecute (arg: Value) =
         match arg with
