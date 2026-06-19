@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="VfsIO.fs" />
     <Compile Include="VfsManager.fs" />
   </ItemGroup>
 
