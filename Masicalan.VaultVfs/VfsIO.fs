@@ -14,11 +14,11 @@ module VfsIO =
 
     let private readEncryptedPayload (vaultPath:string) : byte[] =
         use fs = File.Open(vaultPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-        let headerBytes = Array.zeroCreate<byte>(HeaderMagic.Length)
+        let headerBytes = Array.zeroCreate<byte>(VfsConstans.HeaderMagic.Length)
         let read = fs.Read(headerBytes, 0, headerBytes.Length)
         if read <> headerBytes.Length then invalidOp "Not a valid MASIV file (short header)."
         let headerStr = Encoding.ASCII.GetString(headerBytes)
-        if headerStr <> HeaderMagic then invalidOp "Not a valid MASIV file (magic mismatch)."
+        if headerStr <> VfsConstans.HeaderMagic then invalidOp "Not a valid MASIV file (magic mismatch)."
 
         let ver = fs.ReadByte()
         if ver = -1 then invalidOp "Not a valid MASIV file (missing version)."
@@ -30,10 +30,10 @@ module VfsIO =
         payload
 
     let private decryptPayload (encrypted:byte[]) : byte[] =
-        ProtectedData.Unprotect(encrypted, Entropy, DataProtectionScope.CurrentUser)
+        ProtectedData.Unprotect(encrypted, VfsConstans.DefaultEntropy, DataProtectionScope.CurrentUser)
 
     let private encryptPayload (plain:byte[]) : byte[] =
-        ProtectedData.Protect(plain, Entropy, DataProtectionScope.CurrentUser)
+        ProtectedData.Protect(plain, VfsConstans.DefaultEntropy, DataProtectionScope.CurrentUser)
 
     let private sha256hex (data:byte[]) : string =
         use sha = SHA256.Create()
@@ -136,9 +136,9 @@ module VfsIO =
         // encrypt and write back
         let newEncrypted = encryptPayload finalZip
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
-        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        let header = Encoding.ASCII.GetBytes(VfsConstans.HeaderMagic)
         outFs.Write(header, 0, header.Length)
-        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write([| VfsConstans.VersionByte |], 0, 1)
         outFs.Write(newEncrypted, 0, newEncrypted.Length)
         outFs.Flush()
 
@@ -207,9 +207,9 @@ module VfsIO =
 
         let newEncrypted = encryptPayload finalZip
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
-        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        let header = Encoding.ASCII.GetBytes(VfsConstans.HeaderMagic)
         outFs.Write(header, 0, header.Length)
-        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write([| VfsConstans.VersionByte |], 0, 1)
         outFs.Write(newEncrypted, 0, newEncrypted.Length)
         outFs.Flush()
 
@@ -314,9 +314,9 @@ module VfsIO =
 
         let newEncrypted = encryptPayload finalZip
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
-        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        let header = Encoding.ASCII.GetBytes(VfsConstans.HeaderMagic)
         outFs.Write(header, 0, header.Length)
-        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write([| VfsConstans.VersionByte |], 0, 1)
         outFs.Write(newEncrypted, 0, newEncrypted.Length)
         outFs.Flush()
 
@@ -427,9 +427,9 @@ module VfsIO =
 
         let newEncrypted = encryptPayload finalZip
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
-        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        let header = Encoding.ASCII.GetBytes(VfsConstans.HeaderMagic)
         outFs.Write(header, 0, header.Length)
-        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write([| VfsConstans.VersionByte |], 0, 1)
         outFs.Write(newEncrypted, 0, newEncrypted.Length)
         outFs.Flush()
 
