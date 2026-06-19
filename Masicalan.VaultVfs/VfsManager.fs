@@ -78,5 +78,10 @@ module VfsManager =
         outFs.Flush()
         outPath
 
+    /// Create an empty encrypted vault file (.masiv) but use default entropy at the given path.
+    /// The produced file contains a ZIP archive (in-memory) with a minimal
+    /// manifest.xml and an empty scripts/ directory. The ZIP bytes are
+    /// encrypted using DPAPI (CurrentUser) and written with a small
+    /// header so the file can be recognized.
     let CreateSimple (outputPath: string) =
         Create outputPath VfsConstants.DefaultEntropyName
