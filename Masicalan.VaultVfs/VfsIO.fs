@@ -69,18 +69,20 @@ module VfsIO =
     /// content: script content as string
     /// attribute: one of "ReadOnly", "Editable", "Executable"
     /// Returns the vaultPath on success.
-    let Add (vaultPath:string) (directory:string) (fileName:string) (content:string) (attribute:VfsAttribute) : string =
+    let Add (vaultPath:string) (vaultEntropyName: string) (directory:string) (fileName:string) (content:string) (attribute:VfsAttribute) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace fileName then invalidArg "fileName" "fileName must be provided"
         if String.IsNullOrWhiteSpace content then invalidArg "content" "content must be provided"
 
         let attr = attribute |> vfsAttributeToString
 
+        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+
         let vault = ensureExtension vaultPath
 
         // Read and decrypt existing vault
         let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted
+        let zipBytes = decryptPayload encrypted entropy
 
         // Prepare content bytes and hash
         let contentBytes = Encoding.UTF8.GetBytes(content)
@@ -147,7 +149,7 @@ module VfsIO =
             ms.ToArray()
 
         // encrypt and write back
-        let newEncrypted = encryptPayload finalZip
+        let newEncrypted = encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -159,13 +161,15 @@ module VfsIO =
 
     /// Set the attribute for a script file in the vault.
     /// entryPath rules same as Read/Edit. newAttr is the VfsAttribute enum.
-    let SetAttribute (vaultPath:string) (entryPath:string) (newAttr: VfsAttribute) : string =
+    let SetAttribute (vaultPath:string) (vaultEntropyName: string) (entryPath:string) (newAttr: VfsAttribute) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
+        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted
+        let zipBytes = decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -218,7 +222,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip
+        let newEncrypted = encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -230,12 +234,14 @@ module VfsIO =
 
     /// List script files stored under scripts/ in the vault.
     /// Returns an array of paths relative to the scripts/ directory (e.g. "subdir/script.masis").
-    let GetScriptFiles (vaultPath:string) : string[] =
+    let GetScriptFiles (vaultPath:string) (vaultEntropyName:string) : string[] =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
+
+        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
 
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted
+        let zipBytes = decryptPayload encrypted entropy
 
         use ms = new MemoryStream(zipBytes)
         use zip = new ZipArchive(ms, ZipArchiveMode.Read, false)
@@ -251,13 +257,15 @@ module VfsIO =
 
     /// Delete a script from the vault by its internal path.
     /// entryPath rules same as Read/Edit.
-    let Delete (vaultPath:string) (entryPath:string) : string =
+    let Delete (vaultPath:string) (vaultEntropyName: string) (entryPath:string) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
+        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted
+        let zipBytes = decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -325,7 +333,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip
+        let newEncrypted = encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -338,13 +346,15 @@ module VfsIO =
     /// Read a script from the vault by its internal path.
     /// entryPath is a path relative to the scripts/ directory, e.g. "subdir/script.masis" or
     /// it may already include the leading "scripts/" prefix.
-    let Read (vaultPath:string) (entryPath:string) : string =
+    let Read (vaultPath:string) (vaultEntropyName: string) (entryPath:string) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
+        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted
+        let zipBytes = decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -381,14 +391,16 @@ module VfsIO =
     /// Edit an existing script inside the vault. entryPath uses same rules as Read.
     /// Will update the file contents and refresh the hash stored in manifest.xml.
     /// Editing is denied when the manifest records attribute="ReadOnly" for the file.
-    let Edit (vaultPath:string) (entryPath:string) (newContent:string) : string =
+    let Edit (vaultPath:string) (vaultEntropyName: string) (entryPath:string) (newContent:string) : string =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
         if isNull newContent then invalidArg "newContent" "newContent must be provided"
 
+        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted
+        let zipBytes = decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -459,7 +471,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip
+        let newEncrypted = encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
