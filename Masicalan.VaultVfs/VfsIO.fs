@@ -145,6 +145,27 @@ module VfsIO =
 
         vault
 
+    /// List script files stored under scripts/ in the vault.
+    /// Returns an array of paths relative to the scripts/ directory (e.g. "subdir/script.masis").
+    let GetScriptFiles (vaultPath:string) : string[] =
+        if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
+
+        let vault = ensureExtension vaultPath
+        let encrypted = readEncryptedPayload vault
+        let zipBytes = decryptPayload encrypted
+
+        use ms = new MemoryStream(zipBytes)
+        use zip = new ZipArchive(ms, ZipArchiveMode.Read, false)
+
+        zip.Entries
+        |> Seq.filter (fun e ->
+            // skip directories and non-scripts entries
+            not (e.FullName.EndsWith("/")) && e.FullName.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase))
+        |> Seq.map (fun e ->
+            let p = e.FullName
+            if p.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase) then p.Substring("scripts/".Length) else p)
+        |> Seq.toArray
+
     /// Delete a script from the vault by its internal path.
     /// entryPath rules same as Read/Edit.
     /// Deletion is denied when the manifest records attribute="ReadOnly" for the file.
