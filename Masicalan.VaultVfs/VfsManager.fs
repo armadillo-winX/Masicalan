@@ -62,8 +62,7 @@ module VfsManager =
             else Path.ChangeExtension(outputPath, ".masiv")
 
         // Build everything and write to disk with a small header
-        let manifest = buildManifest()
-        let zipBytes = createZip(manifest)
+        let zipBytes = buildManifest() |> createZip
         let encrypted = 
             entropyName |> Encoding.ASCII.GetBytes |> protect zipBytes
 
