@@ -144,3 +144,116 @@ module VfsIO =
         outFs.Flush()
 
         vault
+
+    /// Read a script from the vault by its internal path.
+    /// entryPath is a path relative to the scripts/ directory, e.g. "subdir/script.masis" or
+    /// it may already include the leading "scripts/" prefix.
+    let Read (vaultPath:string) (entryPath:string) : string =
+        if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
+        if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
+
+        let vault = ensureExtension vaultPath
+        let encrypted = readEncryptedPayload vault
+        let zipBytes = decryptPayload encrypted
+
+        let normalized =
+            let p = entryPath.Replace("\\", "/").TrimStart('/')
+            if p.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase) then p else sprintf "scripts/%s" p
+
+        use ms = new MemoryStream(zipBytes)
+        use zip = new ZipArchive(ms, ZipArchiveMode.Read, false)
+        let entry = zip.GetEntry(normalized)
+        if isNull entry then invalidOp (sprintf "Entry '%s' not found in vault." normalized)
+
+        use s = entry.Open()
+        use out = new MemoryStream()
+        s.CopyTo(out)
+        let bytes = out.ToArray()
+        Encoding.UTF8.GetString(bytes)
+
+    /// Edit an existing script inside the vault. entryPath uses same rules as Read.
+    /// Will update the file contents and refresh the hash stored in manifest.xml.
+    /// Editing is denied when the manifest records attribute="ReadOnly" for the file.
+    let Edit (vaultPath:string) (entryPath:string) (newContent:string) : string =
+        if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
+        if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
+        if isNull newContent then invalidArg "newContent" "newContent must be provided"
+
+        let vault = ensureExtension vaultPath
+        let encrypted = readEncryptedPayload vault
+        let zipBytes = decryptPayload encrypted
+
+        let normalized =
+            let p = entryPath.Replace("\\", "/").TrimStart('/')
+            if p.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase) then p else sprintf "scripts/%s" p
+
+        let contentBytes = Encoding.UTF8.GetBytes(newContent)
+        let newHash = sha256hex contentBytes
+
+        use ms = new MemoryStream(zipBytes)
+        use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
+
+        let entry = zip.GetEntry(normalized)
+        if isNull entry then invalidOp (sprintf "Entry '%s' not found in vault." normalized)
+
+        // find manifest and corresponding file element
+        let manifestEntry = zip.GetEntry("manifest.xml")
+        if isNull manifestEntry then invalidOp "manifest.xml missing in vault"
+
+        use manifestStream = manifestEntry.Open()
+        let doc = XDocument.Load(manifestStream)
+        // remove old manifest entry so it can be recreated
+        manifestEntry.Delete()
+
+        let filesEl =
+            if doc.Root = null then invalidOp "Invalid manifest.xml: missing root"
+            else
+                let fe = doc.Root.Element(XName.Get("Files"))
+                if isNull fe then
+                    let f = XElement(XName.Get("Files"))
+                    doc.Root.Add(f)
+                    f
+                else fe
+
+        let fileEl =
+            filesEl.Elements(XName.Get("File"))
+            |> Seq.tryFind (fun e ->
+                let p = (e.Attribute(XName.Get("path")) |> fun a -> if isNull a then null else a.Value)
+                let n = (e.Attribute(XName.Get("name")) |> fun a -> if isNull a then null else a.Value)
+                (not (isNull p) && String.Equals(p, normalized, StringComparison.OrdinalIgnoreCase)) ||
+                (not (isNull n) && String.Equals(n, Path.GetFileName(normalized), StringComparison.OrdinalIgnoreCase)) )
+
+        match fileEl with
+        | None -> invalidOp "File entry not found in manifest.xml"
+        | Some fe ->
+            let attr = fe.Attribute(XName.Get("attribute"))
+            let attrVal = if isNull attr then String.Empty else attr.Value
+            if String.Equals(attrVal, "ReadOnly", StringComparison.OrdinalIgnoreCase) then invalidOp "Cannot edit read-only file"
+
+            // replace entry contents
+            entry.Delete()
+            let newEntry = zip.CreateEntry(normalized, CompressionLevel.Optimal)
+            use ne = newEntry.Open()
+            ne.Write(contentBytes, 0, contentBytes.Length)
+
+            // update hash in manifest and recreate manifest entry
+            fe.SetAttributeValue(XName.Get("hash"), newHash)
+            let me2 = zip.CreateEntry("manifest.xml", CompressionLevel.Optimal)
+            use ms2 = me2.Open()
+            doc.Save(ms2)
+
+        // finalize zip and write back
+        zip.Dispose()
+        let finalZip =
+            ms.Position <- 0L
+            ms.ToArray()
+
+        let newEncrypted = encryptPayload finalZip
+        use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
+        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        outFs.Write(header, 0, header.Length)
+        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write(newEncrypted, 0, newEncrypted.Length)
+        outFs.Flush()
+
+        vault
