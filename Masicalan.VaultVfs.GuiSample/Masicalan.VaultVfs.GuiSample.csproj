@@ -15,4 +15,8 @@
 	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Masicalan.VaultVfs\Masicalan.VaultVfs.fsproj" />
+  </ItemGroup>
+
 </Project>
