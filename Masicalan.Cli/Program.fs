@@ -19,7 +19,10 @@ let runInterpreter script =
 
 let runIntprtWithStdExt script =
     let ioExt = IOExtension.createExtEnv ()
-    Interpreter.RunWithExt script Map.empty ioExt |> ignore
+    let psExt = ProcessExtension.createExtEnv ()
+    let exFunEnv = Map.fold (fun acc key value -> Map.add key value acc) ioExt psExt
+
+    Interpreter.RunWithExt script Map.empty exFunEnv |> ignore
 
 let runInterprAndPrintEnv script =
     let env = Interpreter.Run script
