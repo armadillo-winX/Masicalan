@@ -57,6 +57,21 @@ namespace Masicalan.VaultVfs.GuiSample
             if (openFileDialog.ShowDialog() == true)
             {
                 PathBox.Text = openFileDialog.FileName;
+
+                try
+                {
+                    string[] files = VfsIO.GetScriptFiles(PathBox.Text, this._entropyName);
+                    foreach (string file in files)
+                    {
+                        ScriptFilesListBox.Items.Add(file);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this,
+                        ex.Message, "エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
