@@ -19,7 +19,7 @@ let runInterpreter script =
 
 let runIntprtWithStdExt script =
     let ioExt = IOExtension.createExtEnv ()
-    Interpreter.RunWithExt script ioExt |> ignore
+    Interpreter.RunWithExt script Map.empty ioExt |> ignore
 
 let runInterprAndPrintEnv script =
     let env = Interpreter.Run script
