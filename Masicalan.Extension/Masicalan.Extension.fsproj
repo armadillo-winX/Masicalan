@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ProcessExtension.fs" />
     <Compile Include="IOExtension.fs" />
   </ItemGroup>
 
