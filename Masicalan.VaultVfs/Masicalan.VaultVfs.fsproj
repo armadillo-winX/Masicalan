@@ -15,8 +15,8 @@
   <ItemGroup>
     <Compile Include="VfsConstants.fs" />
     <Compile Include="VfsAttribute.fs" />
-    <Compile Include="VfsIO.fs" />
     <Compile Include="VfsManager.fs" />
+    <Compile Include="VfsIO.fs" />
   </ItemGroup>
 
   <ItemGroup>
