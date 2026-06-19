@@ -145,6 +145,96 @@ module VfsIO =
 
         vault
 
+    /// Delete a script from the vault by its internal path.
+    /// entryPath rules same as Read/Edit.
+    /// Deletion is denied when the manifest records attribute="ReadOnly" for the file.
+    let Delete (vaultPath:string) (entryPath:string) : string =
+        if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
+        if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
+
+        let vault = ensureExtension vaultPath
+        let encrypted = readEncryptedPayload vault
+        let zipBytes = decryptPayload encrypted
+
+        let normalized =
+            let p = entryPath.Replace("\\", "/").TrimStart('/')
+            if p.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase) then p else sprintf "scripts/%s" p
+
+        use ms = new MemoryStream(zipBytes)
+        use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
+
+        let entry = zip.GetEntry(normalized)
+        if isNull entry then invalidOp (sprintf "Entry '%s' not found in vault." normalized)
+
+        // load or create manifest
+        let manifestEntry = zip.GetEntry("manifest.xml")
+        let doc =
+            if isNull manifestEntry then
+                let d = XDocument(XElement(XName.Get("Vault"), XAttribute(XName.Get("name"), "Masicalan Vault VFS"), XAttribute(XName.Get("version"), "1"), XAttribute(XName.Get("createdUtc"), DateTime.UtcNow.ToString("o"))))
+                d.Root.Add(XElement(XName.Get("ScriptsDirectory")))
+                let files = XElement(XName.Get("Files"))
+                d.Root.Add(files)
+                d
+            else
+                use msr = manifestEntry.Open()
+                let d = XDocument.Load(msr)
+                // remove old manifest entry so we can recreate later
+                manifestEntry.Delete()
+                d
+
+        // ensure Files element
+        let filesEl =
+            if doc.Root = null then invalidOp "Invalid manifest.xml: missing root"
+            else
+                let fe = doc.Root.Element(XName.Get("Files"))
+                if isNull fe then
+                    let f = XElement(XName.Get("Files"))
+                    doc.Root.Add(f)
+                    f
+                else fe
+
+        // find matching file element
+        let fileElOpt =
+            filesEl.Elements(XName.Get("File"))
+            |> Seq.tryFind (fun e ->
+                let p = (e.Attribute(XName.Get("path")) |> fun a -> if isNull a then null else a.Value)
+                let n = (e.Attribute(XName.Get("name")) |> fun a -> if isNull a then null else a.Value)
+                (not (isNull p) && String.Equals(p, normalized, StringComparison.OrdinalIgnoreCase)) ||
+                (not (isNull n) && String.Equals(n, Path.GetFileName(normalized), StringComparison.OrdinalIgnoreCase)) )
+
+        match fileElOpt with
+        | Some fe ->
+            let attr = fe.Attribute(XName.Get("attribute"))
+            let attrVal = if isNull attr then String.Empty else attr.Value
+            if String.Equals(attrVal, "ReadOnly", StringComparison.OrdinalIgnoreCase) then invalidOp "Cannot delete read-only file"
+            // remove from manifest
+            fe.Remove()
+        | None -> ()
+
+        // delete the entry
+        entry.Delete()
+
+        // recreate manifest entry
+        let me2 = zip.CreateEntry("manifest.xml", CompressionLevel.Optimal)
+        use ms2 = me2.Open()
+        doc.Save(ms2)
+
+        // finalize and write back
+        zip.Dispose()
+        let finalZip =
+            ms.Position <- 0L
+            ms.ToArray()
+
+        let newEncrypted = encryptPayload finalZip
+        use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
+        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        outFs.Write(header, 0, header.Length)
+        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write(newEncrypted, 0, newEncrypted.Length)
+        outFs.Flush()
+
+        vault
+
     /// Read a script from the vault by its internal path.
     /// entryPath is a path relative to the scripts/ directory, e.g. "subdir/script.masis" or
     /// it may already include the leading "scripts/" prefix.
