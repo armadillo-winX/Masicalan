@@ -129,6 +129,7 @@ module VfsIO =
             // update existing manifest by replacing it
             use readStream = manifestEntry.Open()
             let doc = XDocument.Load(readStream)
+            readStream.Dispose()
             // remove old manifest entry so we can recreate
             manifestEntry.Delete()
             // ensure Files element exists
