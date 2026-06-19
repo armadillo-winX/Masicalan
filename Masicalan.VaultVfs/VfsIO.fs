@@ -47,6 +47,13 @@ module VfsIO =
         for b in hash do sb.AppendFormat("{0:x2}", b) |> ignore
         sb.ToString()
 
+    let private vfsAttributeToString (a: VfsAttribute) : string =
+        match a with
+        | VfsAttribute.ReadOnly -> "ReadOnly"
+        | VfsAttribute.Editable -> "Editable"
+        | VfsAttribute.Executable -> "Executable"
+        | _ -> invalidOp "Unknown VfsAttribute"
+
     /// Add a script file into an existing .masiv vault.
     /// vaultPath: path to .masiv file
     /// directory: directory inside scripts/ where the file will be placed (single name or nested using '/').
@@ -135,6 +142,77 @@ module VfsIO =
             ms.ToArray()
 
         // encrypt and write back
+        let newEncrypted = encryptPayload finalZip
+        use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
+        let header = Encoding.ASCII.GetBytes(HeaderMagic)
+        outFs.Write(header, 0, header.Length)
+        outFs.Write([| VersionByte |], 0, 1)
+        outFs.Write(newEncrypted, 0, newEncrypted.Length)
+        outFs.Flush()
+
+        vault
+
+    /// Set the attribute for a script file in the vault.
+    /// entryPath rules same as Read/Edit. newAttr is the VfsAttribute enum.
+    let SetAttribute (vaultPath:string) (entryPath:string) (newAttr: VfsAttribute) : string =
+        if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
+        if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
+
+        let vault = ensureExtension vaultPath
+        let encrypted = readEncryptedPayload vault
+        let zipBytes = decryptPayload encrypted
+
+        let normalized =
+            let p = entryPath.Replace("\\", "/").TrimStart('/')
+            if p.StartsWith("scripts/", StringComparison.OrdinalIgnoreCase) then p else sprintf "scripts/%s" p
+
+        let attrStr = vfsAttributeToString newAttr
+
+        use ms = new MemoryStream(zipBytes)
+        use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
+
+        let manifestEntry = zip.GetEntry("manifest.xml")
+        if isNull manifestEntry then invalidOp "manifest.xml missing in vault"
+
+        use manifestStream = manifestEntry.Open()
+        let doc = XDocument.Load(manifestStream)
+        // remove old manifest entry so we can recreate
+        manifestEntry.Delete()
+
+        let filesEl =
+            if doc.Root = null then invalidOp "Invalid manifest.xml: missing root"
+            else
+                let fe = doc.Root.Element(XName.Get("Files"))
+                if isNull fe then
+                    let f = XElement(XName.Get("Files"))
+                    doc.Root.Add(f)
+                    f
+                else fe
+
+        let fileElOpt =
+            filesEl.Elements(XName.Get("File"))
+            |> Seq.tryFind (fun e ->
+                let p = (e.Attribute(XName.Get("path")) |> fun a -> if isNull a then null else a.Value)
+                let n = (e.Attribute(XName.Get("name")) |> fun a -> if isNull a then null else a.Value)
+                (not (isNull p) && String.Equals(p, normalized, StringComparison.OrdinalIgnoreCase)) ||
+                (not (isNull n) && String.Equals(n, Path.GetFileName(normalized), StringComparison.OrdinalIgnoreCase)) )
+
+        match fileElOpt with
+        | None -> invalidOp "File entry not found in manifest.xml"
+        | Some fe ->
+            fe.SetAttributeValue(XName.Get("attribute"), attrStr)
+
+            // recreate manifest
+            let me2 = zip.CreateEntry("manifest.xml", CompressionLevel.Optimal)
+            use ms2 = me2.Open()
+            doc.Save(ms2)
+
+        // finalize and write back
+        zip.Dispose()
+        let finalZip =
+            ms.Position <- 0L
+            ms.ToArray()
+
         let newEncrypted = encryptPayload finalZip
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(HeaderMagic)
