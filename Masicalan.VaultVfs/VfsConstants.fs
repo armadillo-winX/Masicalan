@@ -2,7 +2,7 @@ namespace Masicalan.VaultVfs
 
 open System.Text
 
-module VfsConstans =
+module VfsConstants =
     // Constants used for MASIV file format and DPAPI
     let internal HeaderMagic = "MASIV"
     let internal VersionByte = byte 1
