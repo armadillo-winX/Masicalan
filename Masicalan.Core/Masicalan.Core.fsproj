@@ -17,7 +17,7 @@
     <Compile Include="EvaluatorHelper.fs" />
     <Compile Include="Evaluator.fs" />
     <Compile Include="Parser.fs" />
-    <Compile Include="PrimitiveBuiltins.fs" />
+    <Compile Include="PrimitiveExtension.fs" />
     <Compile Include="Interpreter.fs" />
   </ItemGroup>
 
