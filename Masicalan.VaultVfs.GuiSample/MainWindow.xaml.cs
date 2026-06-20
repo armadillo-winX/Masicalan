@@ -84,7 +84,7 @@ namespace Masicalan.VaultVfs.GuiSample
                         string scriptFile = openFileDialog.FileName;
                         string script = File.ReadAllText(scriptFile);
                         VfsIO.Add(
-                            PathBox.Text, this._entropyName, "scripts/", Path.GetFileName(scriptFile), script, VfsAttribute.Executable
+                            PathBox.Text, this._entropyName, "", Path.GetFileName(scriptFile), script, VfsAttribute.Executable
                             );
 
                         ScriptFilesListBox.Items.Clear();
