@@ -39,6 +39,7 @@ namespace Masicalan.VaultVfs.GuiSample
             try
             {
                 VfsIO.Edit(this.VaultFilePath, this.VaultEntropyName, this.ScriptEntryPath, MainTextBox.Text);
+                this.DialogResult = true;
             }
             catch (Exception ex)
             {
