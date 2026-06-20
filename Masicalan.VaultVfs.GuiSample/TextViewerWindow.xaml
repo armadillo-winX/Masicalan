@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Masicalan.VaultVfs.GuiSample"
         mc:Ignorable="d"
-        Title="Text Viewer" Height="278" Width="398">
+        Title="Text Viewer" Height="278" Width="398"
+        WindowStartupLocation="CenterOwner">
     <Grid>
         <TextBox x:Name="MainTextBox"
             TextWrapping="NoWrap"
