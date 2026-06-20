@@ -425,6 +425,8 @@ module VfsIO =
 
         use manifestStream = manifestEntry.Open()
         let doc = XDocument.Load(manifestStream)
+        manifestStream.Dispose()
+
         // remove old manifest entry so it can be recreated
         manifestEntry.Delete()
 
@@ -456,6 +458,8 @@ module VfsIO =
             let attr = fe.Attribute(XName.Get("attribute"))
             let attrVal = if isNull attr then String.Empty else attr.Value
             if String.Equals(attrVal, "ReadOnly", StringComparison.OrdinalIgnoreCase) then invalidOp "Cannot edit read-only file"
+
+            curStream.Dispose()
 
             // replace entry contents
             entry.Delete()
