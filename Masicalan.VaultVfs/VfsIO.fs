@@ -292,6 +292,8 @@ module VfsIO =
             else
                 use msr = manifestEntry.Open()
                 let d = XDocument.Load(msr)
+                msr.Dispose()
+
                 // remove old manifest entry so we can recreate later
                 manifestEntry.Delete()
                 d
