@@ -128,6 +128,13 @@ namespace Masicalan.VaultVfs.GuiSample
                 try
                 {
                     VfsIO.Delete(PathBox.Text, this._entropyName, path);
+
+                    ScriptFilesListBox.Items.Clear();
+                    string[] files = VfsIO.GetScriptFiles(PathBox.Text, this._entropyName);
+                    foreach (string file in files)
+                    {
+                        ScriptFilesListBox.Items.Add(file);
+                    }
                 }
                 catch (Exception ex)
                 {
