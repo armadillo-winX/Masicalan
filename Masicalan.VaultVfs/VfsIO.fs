@@ -30,10 +30,10 @@ module VfsIO =
         payload
 
     let private decryptPayload (encrypted:byte[]) (entropy: byte[]) : byte[] =
-        ProtectedData.Unprotect(encrypted, entropy, DataProtectionScope.LocalMachine)
+        ProtectedData.Unprotect(encrypted, entropy, DataProtectionScope.CurrentUser)
 
     let private encryptPayload (plain:byte[]) (entropy: byte[]) : byte[] =
-        ProtectedData.Protect(plain, entropy, DataProtectionScope.LocalMachine)
+        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
 
     let private sha256hex (data:byte[]) : string =
         use sha = SHA256.Create()

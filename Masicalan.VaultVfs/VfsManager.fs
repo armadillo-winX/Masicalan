@@ -27,10 +27,10 @@ module VfsManager =
         ms.Position <- 0L
         ms.ToArray()
 
-    // Encrypt bytes using DPAPI (LocalMachine). We include a fixed optional
+    // Encrypt bytes using DPAPI (CurrentUser). We include a fixed optional
     // entropy so the protection is slightly bound to this application.
     let private protect (plain: byte[]) (entropy: byte[]) =
-        ProtectedData.Protect(plain, entropy, DataProtectionScope.LocalMachine)
+        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
 
     // Create manifest XML meta information
     let internal buildManifestMetaInfo () =
