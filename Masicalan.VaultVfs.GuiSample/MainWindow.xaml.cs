@@ -103,25 +103,20 @@ namespace Masicalan.VaultVfs.GuiSample
             }
         }
 
-        private void ReadButtonOnClick(object sender, RoutedEventArgs e)
+        private void EditButtonOnClick(object sender, RoutedEventArgs e)
         {
             string? path = ScriptFilesListBox.SelectedItem as string;
             if (!string.IsNullOrWhiteSpace(path))
             {
-                try
+                TextViewerWindow textViewerWindow = new(
+                    PathBox.Text,
+                    this._entropyName,
+                    path
+                    )
                 {
-                    string script = VfsIO.Read(PathBox.Text, this._entropyName, path);
-                    TextViewerWindow textViewerWindow = new(script)
-                    {
-                        Owner = this
-                    };
-                    textViewerWindow.ShowDialog();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, ex.Message, "エラー",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    Owner = this
+                };
+                textViewerWindow.ShowDialog();
             }
         }
     }

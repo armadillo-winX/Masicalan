@@ -21,9 +21,9 @@
             Content="VFS にファイルを追加" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top"
             Width="120" Height="24" Click="AddScriptButtonOnClick"/>
         <ListBox x:Name="ScriptFilesListBox" Margin="135,66,10,10"/>
-        <Button x:Name="ReadButton"
+        <Button x:Name="EditButton"
             Width="45"
-            Content="読む" HorizontalAlignment="Left" Margin="135,41,0,0" VerticalAlignment="Top" Click="ReadButtonOnClick"/>
+            Content="編集" HorizontalAlignment="Left" Margin="135,41,0,0" VerticalAlignment="Top" Click="EditButtonOnClick"/>
 
     </Grid>
 </Window>
