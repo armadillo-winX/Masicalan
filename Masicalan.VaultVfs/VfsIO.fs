@@ -12,6 +12,9 @@ module VfsIO =
     let private ensureExtension (path:string) =
         if Path.GetExtension path = ".masiv" then path else Path.ChangeExtension(path, ".masiv")
 
+    let private ensureEntryName (zip:ZipArchive) (name:string) =
+        if zip.GetEntry(name) = null then zip.CreateEntry(name) |> ignore
+
     let private readEncryptedPayload (vaultPath:string) : byte[] =
         use fs = File.Open(vaultPath, FileMode.Open, FileAccess.Read, FileShare.Read)
         let headerBytes = Array.zeroCreate<byte>(VfsConstants.HeaderMagic.Length)
@@ -102,11 +105,8 @@ module VfsIO =
         use zip = new ZipArchive(ms, ZipArchiveMode.Update, true)
 
         // ensure scripts/ and target dir entries exist
-        let ensureEntryName (name:string) =
-            if zip.GetEntry(name) = null then zip.CreateEntry(name) |> ignore
-
-        ensureEntryName("scripts/")
-        if not (String.IsNullOrEmpty dirNormalized) then ensureEntryName(entryDirPath)
+        ensureEntryName zip "scripts/"
+        if not (String.IsNullOrEmpty dirNormalized) then ensureEntryName zip entryDirPath
 
         // create or replace the script file entry
         let existing = zip.GetEntry(entryFilePath)
