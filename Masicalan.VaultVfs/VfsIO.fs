@@ -79,7 +79,7 @@ module VfsIO =
 
         let attr = attribute |> vfsAttributeToString
 
-        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+        let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
 
@@ -167,7 +167,7 @@ module VfsIO =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
-        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+        let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
@@ -239,7 +239,7 @@ module VfsIO =
     let GetScriptFiles (vaultPath:string) (vaultEntropyName:string) : string[] =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
 
-        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+        let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
@@ -263,7 +263,7 @@ module VfsIO =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
-        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+        let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
@@ -355,7 +355,7 @@ module VfsIO =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
-        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+        let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault
@@ -401,7 +401,7 @@ module VfsIO =
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
         if isNull newContent then invalidArg "newContent" "newContent must be provided"
 
-        let entropy = vaultEntropyName |> Encoding.ASCII.GetBytes
+        let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
         let encrypted = readEncryptedPayload vault

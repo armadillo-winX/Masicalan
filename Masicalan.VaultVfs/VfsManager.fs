@@ -68,7 +68,7 @@ module VfsManager =
         // Build everything and write to disk with a small header
         let zipBytes = buildManifest() |> createZip
         let encrypted = 
-            entropyName |> Encoding.ASCII.GetBytes |> protect zipBytes
+            entropyName |> Encoding.UTF8.GetBytes |> protect zipBytes
 
         // File layout: ASCII "MASIV" (5 bytes) + version byte (1) + encrypted payload
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
