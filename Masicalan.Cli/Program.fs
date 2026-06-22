@@ -1,6 +1,6 @@
 ﻿open FParsec
 open Masicalan.Core
-open Masicalan.Extension
+open Masicalan.Standard.Extension
 open System
 open System.Diagnostics
 open System.IO

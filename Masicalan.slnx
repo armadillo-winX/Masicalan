@@ -1,7 +1,7 @@
 <Solution>
   <Project Path="Masicalan.Cli/Masicalan.Cli.fsproj" />
   <Project Path="Masicalan.Core/Masicalan.Core.fsproj" />
-  <Project Path="Masicalan.Extension/Masicalan.Extension.fsproj" Id="d344ff16-85db-4234-9f7a-54b7474a93c1" />
+  <Project Path="Masicalan.Extension/Masicalan.Standard.Extension.fsproj" Id="d344ff16-85db-4234-9f7a-54b7474a93c1" />
   <Project Path="Masicalan.VaultVfs.GuiSample/Masicalan.VaultVfs.GuiSample.csproj" Id="9fe9d9d1-614c-4e4c-8bae-3351d7aa4076" />
   <Project Path="Masicalan.VaultVfs/Masicalan.VaultVfs.fsproj" Id="47237fb6-8eed-465f-bcc0-6d286f19cc5f" />
 </Solution>

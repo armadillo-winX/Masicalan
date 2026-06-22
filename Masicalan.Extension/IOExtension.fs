@@ -1,4 +1,4 @@
-namespace Masicalan.Extension
+namespace Masicalan.Standard.Extension
 
 open Masicalan.Core
 open System.IO
