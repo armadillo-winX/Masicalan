@@ -35,7 +35,7 @@ module ProcessExtension =
             |> fun p -> p.Id
             |> Value.IntVal
         |_->
-            failwithf "start: arguments error"
+            failwithf "startWithArgs: arguments error"
 
     let createExtEnv () =
         Map[
