@@ -1,5 +1,7 @@
 namespace Masicalan.Core
 
+open System
+
 module PrimitiveExtension =
 
     let rec private toStringExecute (arg: Value) =
@@ -46,9 +48,14 @@ module PrimitiveExtension =
         |_-> 
             failwithf "Cannot print non-string value"
 
+    // readLine()
+    let private readLineFunc (args: Value list) =
+        Console.ReadLine() |> Value.StringVal
+
     let create () =
         Map[
         ("toString"), (["a"], Statement.CallNativeF (toStringFunc, [Var "a"]))
         ("getLength"), (["a"], Statement.CallNativeF (getLengthFunc, [Var "a"]))
         ("printn"), (["s"], Statement.CallNativeF (printFunc, [Var "s"]))
+        ("readLine"), ([], Statement.CallNativeF (readLineFunc, []))
         ]
