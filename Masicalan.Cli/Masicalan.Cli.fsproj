@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Masicalan.Core\Masicalan.Core.fsproj" />
-    <ProjectReference Include="..\Masicalan.Extension\Masicalan.Standard.Extension.fsproj" />
     <ProjectReference Include="..\Masicalan.Standard.Extension\Masicalan.Standard.Extension.fsproj" />
   </ItemGroup>
 
