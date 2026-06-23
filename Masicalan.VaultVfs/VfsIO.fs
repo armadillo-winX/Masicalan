@@ -65,6 +65,13 @@ module VfsIO =
         | VfsAttribute.Executable -> "Executable"
         | _ -> invalidOp "Unknown VfsAttribute"
 
+    let private stringToVfsAttribute (a: string) : VfsAttribute =
+        match a with
+        | "ReadOnly" -> VfsAttribute.ReadOnly
+        | "Editable" -> VfsAttribute.Editable
+        | "Executable" -> VfsAttribute.Executable
+        | _-> invalidOp "Failt to transfer to VfsAttribute"
+
     /// Add a script file into an existing .masiv vault.
     /// vaultPath: path to .masiv file
     /// directory: directory inside scripts/ where the file will be placed (single name or nested using '/').
