@@ -149,13 +149,16 @@ namespace Masicalan.VaultVfs.GuiSample
         {
             SaveFileDialog saveFileDialog = new()
             {
-                Filter = "zip アーカイブ|*.zip"
+                Filter = "zip アーカイブ|*.zip",
+                FileName = Path.ChangeExtension(Path.GetFileName(PathBox.Text), ".zip")
             };
             if (saveFileDialog.ShowDialog() == true)
             {
                 try
                 {
                     VfsManager.ConvertToZip(PathBox.Text, saveFileDialog.FileName, this._entropyName);
+                    MessageBox.Show(this,
+                        "変換しました．", "ZIP に変換", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
