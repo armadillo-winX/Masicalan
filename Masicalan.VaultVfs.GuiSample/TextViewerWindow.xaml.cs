@@ -26,7 +26,25 @@ namespace Masicalan.VaultVfs.GuiSample
 
             try
             {
-                MainTextBox.Text = VfsIO.Read(vaultFilePath, vaultEntropyName, scriptEntryPath);
+                VfsFileInfo vfsFileInfo = VfsIO.Read(vaultFilePath, vaultEntropyName, scriptEntryPath);
+                switch (vfsFileInfo.Attribute)
+                {
+                    case VfsAttribute.ReadOnly:
+                        MainTextBox.Text = vfsFileInfo.Script;
+                        SaveButton.IsEnabled = false;
+                        AttributeBlock.Text = "ReadOnly";
+                        break;
+                    case VfsAttribute.Editable:
+                        MainTextBox.Text = vfsFileInfo.Script;
+                        SaveButton.IsEnabled = true;
+                        AttributeBlock.Text = "Editable";
+                        break;
+                    case VfsAttribute.Executable:
+                        MainTextBox.Text = vfsFileInfo.Script;
+                        SaveButton.IsEnabled = true;
+                        AttributeBlock.Text = "Executable";
+                        break;
+                }
             }
             catch (Exception ex)
             {
