@@ -27,6 +27,8 @@
         <Button x:Name="DeleteButton"
             Width="45"
             Content="削除" HorizontalAlignment="Left" Margin="185,41,0,0" VerticalAlignment="Top" Click="DeleteButtonOnClick"/>
+        <Button x:Name="ConvertButton"
+            Content="ZIP に変換" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Width="120" Height="24" Click="ConvertButtonOnClick"/>
 
     </Grid>
 </Window>

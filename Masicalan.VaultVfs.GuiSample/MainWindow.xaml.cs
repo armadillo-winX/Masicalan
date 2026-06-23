@@ -144,5 +144,25 @@ namespace Masicalan.VaultVfs.GuiSample
                 }
             }
         }
+
+        private void ConvertButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Filter = "zip アーカイブ|*.zip"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    VfsManager.ConvertToZip(PathBox.Text, saveFileDialog.FileName, this._entropyName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, ex.Message, "エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
     }
 }
