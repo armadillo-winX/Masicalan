@@ -52,6 +52,31 @@ module VfsManager =
         doc.Save(ms)
         ms.ToArray()
 
+    
+    let internal readEncryptedPayload (vaultPath:string) : byte[] =
+        use fs = File.Open(vaultPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+        let headerBytes = Array.zeroCreate<byte>(VfsConstants.HeaderMagic.Length)
+        let read = fs.Read(headerBytes, 0, headerBytes.Length)
+        if read <> headerBytes.Length then invalidOp "Not a valid MASIV file (short header)."
+        let headerStr = Encoding.ASCII.GetString(headerBytes)
+        if headerStr <> VfsConstants.HeaderMagic then invalidOp "Not a valid MASIV file (magic mismatch)."
+
+        let ver = fs.ReadByte()
+        if ver = -1 then invalidOp "Not a valid MASIV file (missing version)."
+        // remaining bytes are payload
+        let remaining = int (fs.Length - fs.Position)
+        let payload = Array.zeroCreate<byte>(remaining)
+        let r = fs.Read(payload, 0, remaining)
+        if r <> remaining then invalidOp "Failed to read encrypted payload."
+        payload
+
+    let internal decryptPayload (encrypted:byte[]) (entropy: byte[]) : byte[] =
+        ProtectedData.Unprotect(encrypted, entropy, DataProtectionScope.CurrentUser)
+
+    let internal encryptPayload (plain:byte[]) (entropy: byte[]) : byte[] =
+        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
+
+
     /// Create an empty encrypted vault file (.masiv) at the given path.
     /// The produced file contains a ZIP archive (in-memory) with a minimal
     /// manifest.xml and an empty scripts/ directory. The ZIP bytes are

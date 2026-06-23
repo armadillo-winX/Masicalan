@@ -15,29 +15,6 @@ module VfsIO =
     let private ensureEntryName (zip:ZipArchive) (name:string) =
         if zip.GetEntry(name) = null then zip.CreateEntry(name) |> ignore
 
-    let private readEncryptedPayload (vaultPath:string) : byte[] =
-        use fs = File.Open(vaultPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-        let headerBytes = Array.zeroCreate<byte>(VfsConstants.HeaderMagic.Length)
-        let read = fs.Read(headerBytes, 0, headerBytes.Length)
-        if read <> headerBytes.Length then invalidOp "Not a valid MASIV file (short header)."
-        let headerStr = Encoding.ASCII.GetString(headerBytes)
-        if headerStr <> VfsConstants.HeaderMagic then invalidOp "Not a valid MASIV file (magic mismatch)."
-
-        let ver = fs.ReadByte()
-        if ver = -1 then invalidOp "Not a valid MASIV file (missing version)."
-        // remaining bytes are payload
-        let remaining = int (fs.Length - fs.Position)
-        let payload = Array.zeroCreate<byte>(remaining)
-        let r = fs.Read(payload, 0, remaining)
-        if r <> remaining then invalidOp "Failed to read encrypted payload."
-        payload
-
-    let private decryptPayload (encrypted:byte[]) (entropy: byte[]) : byte[] =
-        ProtectedData.Unprotect(encrypted, entropy, DataProtectionScope.CurrentUser)
-
-    let private encryptPayload (plain:byte[]) (entropy: byte[]) : byte[] =
-        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
-
     let private sha256hex (data:byte[]) : string =
         use sha = SHA256.Create()
         let hash = sha.ComputeHash(data)
@@ -91,8 +68,8 @@ module VfsIO =
         let vault = ensureExtension vaultPath
 
         // Read and decrypt existing vault
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         // Prepare content bytes and hash
         let contentBytes = Encoding.UTF8.GetBytes(content)
@@ -158,7 +135,7 @@ module VfsIO =
             ms.ToArray()
 
         // encrypt and write back
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -177,8 +154,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -231,7 +208,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -249,8 +226,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         use ms = new MemoryStream(zipBytes)
         use zip = new ZipArchive(ms, ZipArchiveMode.Read, false)
@@ -273,8 +250,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -345,7 +322,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -365,8 +342,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -419,8 +396,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -496,7 +473,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
