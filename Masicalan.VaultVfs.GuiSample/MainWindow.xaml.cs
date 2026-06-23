@@ -158,7 +158,7 @@ namespace Masicalan.VaultVfs.GuiSample
                 {
                     VfsManager.ConvertToZip(PathBox.Text, saveFileDialog.FileName, this._entropyName);
                     MessageBox.Show(this,
-                        "変換しました．", "ZIP に変換", MessageBoxButton.OK, MessageBoxImage.Information);
+                        "変換しました．", "VFS を ZIP に変換", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
