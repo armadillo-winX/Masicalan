@@ -114,3 +114,10 @@ module VfsManager =
     /// header so the file can be recognized.
     let CreateSimple (outputPath: string) =
         Create outputPath VfsConstants.DefaultEntropyName
+
+    /// Convert an encrypted vault file (.masiv) to a plain zip archive file.
+    let ConvertToZip (vaultPath: string) (outputPath: string) (entropyName: string) =
+        let entropy = Encoding.UTF8.GetBytes(entropyName)
+        let payload = readEncryptedPayload vaultPath
+        let decrypted = decryptPayload payload entropy
+        File.WriteAllBytes(outputPath, decrypted);
