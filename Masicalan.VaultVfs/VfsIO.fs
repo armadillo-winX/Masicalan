@@ -358,7 +358,7 @@ module VfsIO =
     /// Read a script from the vault by its internal path.
     /// entryPath is a path relative to the scripts/ directory, e.g. "subdir/script.masis" or
     /// it may already include the leading "scripts/" prefix.
-    let Read (vaultPath:string) (vaultEntropyName: string) (entryPath:string) : VfsFileInfo =
+    let Read (vaultPath:string) (vaultEntropyName: string) (entryPath:string) : VfsFileData =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
@@ -396,11 +396,11 @@ module VfsIO =
                         invalidOp (sprintf "Integrity check failed for '%s': expected hash %s but found %s" normalized expected actual)
                 let attr = fe.Attribute(XName.Get("attribute"))
                 if not (isNull attr) then
-                    let vfInfo: VfsFileInfo = {
+                    let vfData: VfsFileData = {
                         Script = Encoding.UTF8.GetString(bytes)
                         Attribute = attr.Value |> stringToVfsAttribute
                     }
-                    vfInfo
+                    vfData
                 else
                     invalidOp "File attribute information is missing"
             | None -> 

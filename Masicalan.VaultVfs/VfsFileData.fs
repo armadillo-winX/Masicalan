@@ -1,7 +1,7 @@
 namespace Masicalan.VaultVfs
 
 [<CLIMutable>]
-type VfsFileInfo = {
+type VfsFileData = {
     Script: string
     Attribute: VfsAttribute
 }
