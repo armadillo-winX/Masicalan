@@ -27,11 +27,6 @@ module VfsManager =
         ms.Position <- 0L
         ms.ToArray()
 
-    // Encrypt bytes using DPAPI (CurrentUser). We include a fixed optional
-    // entropy so the protection is slightly bound to this application.
-    let private protect (plain: byte[]) (entropy: byte[]) =
-        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
-
     // Create manifest XML meta information
     let internal buildManifestMetaInfo () =
         XElement(XName.Get("Vault"),
@@ -93,7 +88,7 @@ module VfsManager =
         // Build everything and write to disk with a small header
         let zipBytes = buildManifest() |> createZip
         let encrypted = 
-            entropyName |> Encoding.UTF8.GetBytes |> protect zipBytes
+            entropyName |> Encoding.UTF8.GetBytes |> encryptPayload zipBytes
 
         // File layout: ASCII "MASIV" (5 bytes) + version byte (1) + encrypted payload
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
