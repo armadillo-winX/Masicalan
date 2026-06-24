@@ -12,7 +12,7 @@
             TextWrapping="NoWrap"
             AcceptsReturn="True"
             HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto" Text="" Margin="10,10,10,39"/>
+            VerticalScrollBarVisibility="Auto" Text="" Margin="10,10,10,39" FontFamily="MS Gothic"/>
         <Button x:Name="SaveButton"
             Width="90" Height="24"
             Content="保存" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Click="SaveButtonOnClick"/>
