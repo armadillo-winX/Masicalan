@@ -12,10 +12,13 @@
             TextWrapping="NoWrap"
             AcceptsReturn="True"
             HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto" Text="" Margin="10,10,10,39"/>
+            VerticalScrollBarVisibility="Auto" Text="" Margin="10,10,10,39" FontFamily="MS Gothic" FontSize="14"/>
         <Button x:Name="SaveButton"
             Width="90" Height="24"
             Content="保存" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Click="SaveButtonOnClick"/>
+        <Label Content="属性(_A):" HorizontalAlignment="Left" Margin="10,0,0,6" VerticalAlignment="Bottom"/>
+        <TextBlock x:Name="AttributeBlock"
+            HorizontalAlignment="Left" Margin="67,0,0,11" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>

@@ -15,29 +15,6 @@ module VfsIO =
     let private ensureEntryName (zip:ZipArchive) (name:string) =
         if zip.GetEntry(name) = null then zip.CreateEntry(name) |> ignore
 
-    let private readEncryptedPayload (vaultPath:string) : byte[] =
-        use fs = File.Open(vaultPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-        let headerBytes = Array.zeroCreate<byte>(VfsConstants.HeaderMagic.Length)
-        let read = fs.Read(headerBytes, 0, headerBytes.Length)
-        if read <> headerBytes.Length then invalidOp "Not a valid MASIV file (short header)."
-        let headerStr = Encoding.ASCII.GetString(headerBytes)
-        if headerStr <> VfsConstants.HeaderMagic then invalidOp "Not a valid MASIV file (magic mismatch)."
-
-        let ver = fs.ReadByte()
-        if ver = -1 then invalidOp "Not a valid MASIV file (missing version)."
-        // remaining bytes are payload
-        let remaining = int (fs.Length - fs.Position)
-        let payload = Array.zeroCreate<byte>(remaining)
-        let r = fs.Read(payload, 0, remaining)
-        if r <> remaining then invalidOp "Failed to read encrypted payload."
-        payload
-
-    let private decryptPayload (encrypted:byte[]) (entropy: byte[]) : byte[] =
-        ProtectedData.Unprotect(encrypted, entropy, DataProtectionScope.CurrentUser)
-
-    let private encryptPayload (plain:byte[]) (entropy: byte[]) : byte[] =
-        ProtectedData.Protect(plain, entropy, DataProtectionScope.CurrentUser)
-
     let private sha256hex (data:byte[]) : string =
         use sha = SHA256.Create()
         let hash = sha.ComputeHash(data)
@@ -65,6 +42,13 @@ module VfsIO =
         | VfsAttribute.Executable -> "Executable"
         | _ -> invalidOp "Unknown VfsAttribute"
 
+    let private stringToVfsAttribute (a: string) : VfsAttribute =
+        match a with
+        | "ReadOnly" -> VfsAttribute.ReadOnly
+        | "Editable" -> VfsAttribute.Editable
+        | "Executable" -> VfsAttribute.Executable
+        | _-> invalidOp "Failt to transfer to VfsAttribute"
+
     /// Add a script file into an existing .masiv vault.
     /// vaultPath: path to .masiv file
     /// directory: directory inside scripts/ where the file will be placed (single name or nested using '/').
@@ -84,8 +68,8 @@ module VfsIO =
         let vault = ensureExtension vaultPath
 
         // Read and decrypt existing vault
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         // Prepare content bytes and hash
         let contentBytes = Encoding.UTF8.GetBytes(content)
@@ -151,7 +135,7 @@ module VfsIO =
             ms.ToArray()
 
         // encrypt and write back
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -170,8 +154,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -224,7 +208,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -242,8 +226,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         use ms = new MemoryStream(zipBytes)
         use zip = new ZipArchive(ms, ZipArchiveMode.Read, false)
@@ -266,8 +250,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -338,7 +322,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
@@ -351,15 +335,15 @@ module VfsIO =
     /// Read a script from the vault by its internal path.
     /// entryPath is a path relative to the scripts/ directory, e.g. "subdir/script.masis" or
     /// it may already include the leading "scripts/" prefix.
-    let Read (vaultPath:string) (vaultEntropyName: string) (entryPath:string) : string =
+    let Read (vaultPath:string) (vaultEntropyName: string) (entryPath:string) : VfsFileData =
         if String.IsNullOrWhiteSpace vaultPath then invalidArg "vaultPath" "vaultPath must be provided"
         if String.IsNullOrWhiteSpace entryPath then invalidArg "entryPath" "entryPath must be provided"
 
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -387,11 +371,19 @@ module VfsIO =
                     let actual = sha256hex bytes
                     if not (String.Equals(expected, actual, StringComparison.OrdinalIgnoreCase)) then
                         invalidOp (sprintf "Integrity check failed for '%s': expected hash %s but found %s" normalized expected actual)
+                let attr = fe.Attribute(XName.Get("attribute"))
+                if not (isNull attr) then
+                    let vfData: VfsFileData = {
+                        Script = Encoding.UTF8.GetString(bytes)
+                        Attribute = attr.Value |> stringToVfsAttribute
+                    }
+                    vfData
+                else
+                    invalidOp "File attribute information is missing"
             | None -> 
                 invalidOp "File entry not found in manifest.xml"
         else
             invalidOp "manifest.xml missing in vault"
-        Encoding.UTF8.GetString(bytes)
 
     /// Edit an existing script inside the vault. entryPath uses same rules as Read.
     /// Will update the file contents and refresh the hash stored in manifest.xml.
@@ -404,8 +396,8 @@ module VfsIO =
         let entropy = vaultEntropyName |> Encoding.UTF8.GetBytes
 
         let vault = ensureExtension vaultPath
-        let encrypted = readEncryptedPayload vault
-        let zipBytes = decryptPayload encrypted entropy
+        let encrypted = VfsManager.readEncryptedPayload vault
+        let zipBytes = VfsManager.decryptPayload encrypted entropy
 
         let normalized =
             let p = entryPath.Replace("\\", "/").TrimStart('/')
@@ -481,7 +473,7 @@ module VfsIO =
             ms.Position <- 0L
             ms.ToArray()
 
-        let newEncrypted = encryptPayload finalZip entropy
+        let newEncrypted = VfsManager.encryptPayload finalZip entropy
         use outFs = new FileStream(vault, FileMode.Create, FileAccess.Write, FileShare.None)
         let header = Encoding.ASCII.GetBytes(VfsConstants.HeaderMagic)
         outFs.Write(header, 0, header.Length)
