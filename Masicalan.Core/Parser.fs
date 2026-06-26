@@ -5,17 +5,20 @@ open FParsec
 module Parser =
 
     // Cスタイルのブロックコメントをスキップするパーサ
-    let comment = pstring "/*" >>. manyCharsTill anyChar (pstring "*/") >>% ()
+    let blockComment = pstring "/*" >>. manyCharsTill anyChar (pstring "*/") >>% ()
+
+    // // で始まる行コメントをスキップするパーサ
+    let lineComment = pstring "//" >>. skipManySatisfy (fun c -> c <> '\n' && c <> '\r') >>% ()
 
     // 空白文字（改行含む）を unit に変換するヘルパー
     let whitespaceChar = anyOf [' '; '\t'; '\r'; '\n'] >>% ()
 
     // 元の wspace 相当（スペースとタブのみ + コメントをスキップ）
-    let wspace = skipMany (choice [ anyOf [' '; '\t'] >>% (); comment ])
+    let wspace = skipMany (choice [ anyOf [' '; '\t'] >>% (); blockComment; lineComment ])
 
     // 改行を含む空白（spaces）と、その1回以上版（spaces1）をコメント対応で上書き
-    let spaces = skipMany (choice [ whitespaceChar; comment ])
-    let spaces1 = many1 (choice [ whitespaceChar; comment ]) >>% ()
+    let spaces = skipMany (choice [ whitespaceChar; blockComment; lineComment ])
+    let spaces1 = many1 (choice [ whitespaceChar; blockComment; lineComment ]) >>% ()
 
     // 整数値リテラルパーサ
     let parseIntLiteral : Parser<Expression, unit> = 
