@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
-	  <Authors>Mashiro</Authors>
+	  <Authors>Mashiro Tamane</Authors>
 	  <Product>Masicalan CLI</Product>
 	  <Copyright>Copyright (c) 2026 $(Authors)</Copyright>
 	  <Version>$(VersionPrefix)$(VersionSuffix)</Version>

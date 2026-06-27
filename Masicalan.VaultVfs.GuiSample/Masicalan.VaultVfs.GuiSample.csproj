@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-	  <Authors>Mashiro</Authors>
+	  <Authors>Mashiro Tamane</Authors>
 	  <Product>Masicalan Vault VFS Graphical Sample</Product>
 	  <Copyright>Copyright (c) 2026 $(Authors)</Copyright>
 	  <Version>$(VersionPrefix)$(VersionSuffix)</Version>
