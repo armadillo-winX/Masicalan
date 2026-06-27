@@ -57,7 +57,7 @@ let maybeFunction = env.FunctionsEnv.TryFind("functionName")
 初期変数や初期関数をインジェクションしてスクリプトを実行する場合は，`Interpreter.RunWithExt` を使用します：
 
 ```fsharp
-let script = "result = add(10, 20);"
+let script = "let result = add(10, 20);"
 
 // 初期変数を定義
 let initialVars = Map.ofList [("productName", StringVal "MyProduct")]
