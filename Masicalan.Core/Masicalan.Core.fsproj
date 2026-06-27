@@ -13,6 +13,7 @@
 	  <RepositoryUrl>https://github.com/armadillo-winX/Masicalan/</RepositoryUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <Description>The Masicalan Interpreter Library</Description>
+	  <PackageLicenseExpression> BSD-2-Clause</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
