@@ -97,6 +97,7 @@ module Evaluator =
             }
         | Let (name, expr) ->
             let value = evaluateExpression env expr
+            if env.VariablesEnv |> Map.containsKey name then name |> failwithf "Variable '%s' is already defined."
             let newVarEnvs = env.VariablesEnv.Add(name, value)
 
             { 
