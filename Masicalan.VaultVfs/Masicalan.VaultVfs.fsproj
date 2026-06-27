@@ -13,12 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" />
     <Compile Include="VfsConstants.fs" />
     <Compile Include="VfsAttribute.fs" />
     <Compile Include="VfsManager.fs" />
     <Compile Include="VfsFileData.fs" />
     <Compile Include="VfsIO.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 
   <ItemGroup>
