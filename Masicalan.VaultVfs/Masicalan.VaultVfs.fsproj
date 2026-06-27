@@ -10,6 +10,10 @@
 	  <VersionPrefix>0.1.0</VersionPrefix>
 	  <VersionSuffix>preview.0</VersionSuffix>
 	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	  <Description>Implementation library for a virtual encrypted file system for storing Masicalan script files</Description>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <RepositoryUrl>https://github.com/armadillo-winX/Masicalan/</RepositoryUrl>
+	  <PackageLicenseExpression> BSD-2-Clause</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="README.md" />
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
