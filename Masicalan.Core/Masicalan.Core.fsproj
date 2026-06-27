@@ -4,12 +4,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <Authors>Mashiro Tamane</Authors>
-	  <Product>Masicalan</Product>
+	  <Product>Masicalan Core</Product>
 	  <Copyright>Copyright (c) 2026 $(Authors)</Copyright>
 	  <Version>$(VersionPrefix)$(VersionSuffix)</Version>
 	  <VersionPrefix>0.1.0</VersionPrefix>
 	  <VersionSuffix>preview.0</VersionSuffix>
 	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	  <RepositoryUrl>https://github.com/armadillo-winX/Masicalan/</RepositoryUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <Description>The Masicalan Interpreter Library</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="README.md" />
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
