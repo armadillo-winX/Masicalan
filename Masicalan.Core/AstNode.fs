@@ -14,6 +14,9 @@ type Value =
     | ArrayVal of Value list
     | VoidVal
 
+// 変数の可変性
+type Mutability = Immutable | Mutable
+
 // Operator : 演算子
 type Operator = Add | Sub | Mul | Div | Pow | LessThan | GreaterThan | EqualTo | LogAnd | LogOr
 
