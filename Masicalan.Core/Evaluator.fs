@@ -4,7 +4,7 @@ namespace Masicalan.Core
 
 module Evaluator =
     type EnvironmentState = {
-        VariablesEnv : Map<string, Value>                      // 変数環境
+        VariablesEnv : Map<string, Value * Mutability>       // 変数環境
         FunctionsEnv : Map<string, string list * Statement>  // 関数環境
     }
 
@@ -23,7 +23,7 @@ module Evaluator =
             Value.ArrayVal values
         | Var name ->
             match env.VariablesEnv.TryFind(name) with
-            | Some v -> v
+            | Some (v, m) -> v
             | None -> name |> failwithf "undefined value: %s"
         | Binary (left, op, right) ->
             let l = evaluateExpression env left
@@ -61,8 +61,10 @@ module Evaluator =
                 let argValues = List.map (evaluateExpression env) args
 
                 // スコープの作成(関数ブロックローカル環境)
-                // 初期変数環境は，引数のみ，関数は元の環境を引き継ぐ
-                let localVars = List.zip paramsList argValues |> Map.ofList
+                // 初期変数環境は，引数のみで不変変数，関数は元の環境を引き継ぐ
+                let localVars = List.zip paramsList argValues 
+                                |> Map.ofList
+                                |> Map.map (fun key value -> (value, Mutability.Immutable))
                 let localEnvironment = { VariablesEnv = localVars; FunctionsEnv = env.FunctionsEnv }
 
                 let result = executeStatement localEnvironment stmts
@@ -95,10 +97,10 @@ module Evaluator =
                 Environment = env
                 ReturnValue = Some value
             }
-        | Let (name, expr) ->
+        | Let (name, expr, mutab) ->
             let value = evaluateExpression env expr
             if env.VariablesEnv |> Map.containsKey name then name |> failwithf "Variable '%s' is already defined."
-            let newVarEnvs = env.VariablesEnv.Add(name, value)
+            let newVarEnvs = env.VariablesEnv.Add(name, (value, mutab))
 
             { 
                 Environment = { VariablesEnv = newVarEnvs ; FunctionsEnv = env.FunctionsEnv}
@@ -108,7 +110,9 @@ module Evaluator =
             if env.VariablesEnv.ContainsKey(name) = false then
                 name |> failwithf "cannot assign a value to undefined variable '%s'"
             let value = evaluateExpression env expr
-            let newVarEnv = env.VariablesEnv.Add(name, value)
+            let (_, m) = env.VariablesEnv.[name]
+            if m = Mutability.Immutable then failwithf $"variable '{name}' is immutable."
+            let newVarEnv = env.VariablesEnv.Add(name, (value, m))
             
             {
                 Environment = { VariablesEnv = newVarEnv; FunctionsEnv = env.FunctionsEnv }

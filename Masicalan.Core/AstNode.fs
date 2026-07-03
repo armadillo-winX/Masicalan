@@ -31,7 +31,7 @@ type Expression =
 
 // Statement : 文: 実行することで環境を変化させる(値は返さない)
 type Statement = 
-    | Let of string * Expression                          // define variable
+    | Let of string * Expression * Mutability             // define variable
     | Assign of string * Expression                       // assign value
     | While of Expression * Statement                     // while loop
     | If of Expression * Statement * Statement option     // if-else
