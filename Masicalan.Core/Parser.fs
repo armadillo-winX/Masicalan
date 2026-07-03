@@ -132,6 +132,12 @@ module Parser =
         .>> parseSemicolon
         |>> fun (varName, expr) -> Statement.Let(varName, expr, Mutability.Immutable)
 
+    // mut 文のパーサ
+    let parseMut : Parser<Statement, unit> =
+        pstring "mut" >>. spaces1 >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression
+        .>> parseSemicolon
+        |>> fun (varName, expr) -> Statement.Let(varName, expr, Mutability.Mutable)
+
     // 再代入 <- のパーサ
     let parseAssign : Parser<Statement, unit> =
         parseIdentText .>> wspace .>> pstring "<-" .>> wspace .>>. parseExpression
@@ -204,6 +210,7 @@ module Parser =
             attempt parseFunction
             attempt parseReturn
             attempt parseLet
+            attempt parseMut
             attempt parseAssign
             attempt parsePrint
             attempt parseIf
