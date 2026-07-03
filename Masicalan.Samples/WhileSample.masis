@@ -1,8 +1,8 @@
-let i = 0 ;
+mut i = 0 ;
 while (i < 10) {
     i <- i + 1 ;
 }
 inspect i ;
 
-let k = 0;
+mut k = 0;
 while (k < 20) { k <- k +1 ; inspect k ; }
