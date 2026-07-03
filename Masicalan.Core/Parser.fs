@@ -130,7 +130,7 @@ module Parser =
     let parseLet : Parser<Statement, unit> =
         pstring "let" >>. spaces1 >>. parseIdentText .>> wspace .>> pstring "=" .>> wspace .>>. parseExpression 
         .>> parseSemicolon
-        |>> fun (varName, expr) -> Statement.Let(varName, expr)
+        |>> fun (varName, expr) -> Statement.Let(varName, expr, Mutability.Immutable)
 
     // 再代入 <- のパーサ
     let parseAssign : Parser<Statement, unit> =
