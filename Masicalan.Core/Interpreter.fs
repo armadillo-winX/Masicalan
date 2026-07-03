@@ -15,7 +15,7 @@ module Interpreter =
         | Failure(error, _, _) ->
             failwithf "failed: %s" error
 
-    let RunWithExt (script: string) (extVarEnv: Map<string, Value>) (extFunEnv: Map<string, (string list * Statement)>) =
+    let RunWithExt (script: string) (extVarEnv: Map<string, Value * Mutability>) (extFunEnv: Map<string, (string list * Statement)>) =
         match run Parser.parseProgram script with
         | Success(ast, _, _) ->
             let primEnv = PrimitiveExtension.create()
