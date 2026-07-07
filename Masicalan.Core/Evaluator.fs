@@ -97,6 +97,11 @@ module Evaluator =
                 Environment = env
                 ReturnValue = Some value
             }
+        | Exit ->
+            {
+                Environment = env
+                ReturnValue = None
+            }
         | Let (name, expr, mutab) ->
             let value = evaluateExpression env expr
             if env.VariablesEnv |> Map.containsKey name then name |> failwithf "Variable '%s' is already defined."
