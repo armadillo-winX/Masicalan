@@ -83,11 +83,11 @@ module Parser =
 
     // 引数リストのパーサ
     let parseArgs : Parser<Expression list, unit> =
-        sepBy (parseExpression .>> wspace) (pstring "," .>> wspace)
+        sepBy (parseExpression .>> spaces) (pstring "," .>> spaces)
 
     // 関数呼び出しパーサ
     let parseCallF : Parser<Expression, unit> =
-        parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs)
+        parseIdentText .>> spaces .>>. (between (pstring "(" .>> spaces) (pstring ")" .>> spaces) parseArgs)
         |>> fun (funcName, args) -> Expression.CallF(funcName, args)
 
     // インデックスアクセスパーサ
@@ -201,7 +201,7 @@ module Parser =
 
     // 返り値代入なし関数呼び出し文パーサ
     let parseCallFNotReturn : Parser<Statement, unit> =
-        parseIdentText .>> wspace .>>. (between (pstring "(" .>> wspace) (pstring ")" .>> wspace) parseArgs) .>> parseSemicolon
+        parseIdentText .>> spaces .>>. (between (pstring "(" .>> spaces) (pstring ")" .>> spaces) parseArgs) .>> parseSemicolon
         |>> fun (funcName, args) -> Statement.CallFNotReturn(funcName, args)
 
     // すべての文を統合するパーサ
