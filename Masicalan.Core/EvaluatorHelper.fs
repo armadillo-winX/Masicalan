@@ -109,7 +109,7 @@ module EvaluatorHelper =
         | (StringVal s1, StringVal s2) ->
             failwithf "cannnot compare string values"
         | (BoolVal b1, BoolVal b2) ->
-            failwithf "cannot compare bool values"
+            BoolVal (b1 = b2)
         | (VoidVal, VoidVal) ->
             failwithf "cannot compare void values"
         |_-> failwithf "cannot different type values"
