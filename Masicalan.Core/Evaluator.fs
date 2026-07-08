@@ -100,7 +100,7 @@ module Evaluator =
         | Exit ->
             {
                 Environment = env
-                ReturnValue = None
+                ReturnValue = Some Value.VoidVal
             }
         | Let (name, expr, mutab) ->
             let value = evaluateExpression env expr
