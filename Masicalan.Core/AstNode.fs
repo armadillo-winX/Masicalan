@@ -39,5 +39,6 @@ type Statement =
     | Inspect of Expression                               // print for debug
     | Function of string * string list * Statement        // function
     | Return of Expression                                // return
+    | Exit                                                // exit
     | CallFNotReturn of string * Expression list          // call function without return
     | CallNativeF of (Value list -> Value) * Expression list   // call native function

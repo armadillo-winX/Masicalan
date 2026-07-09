@@ -155,6 +155,11 @@ module Parser =
         pstring "return" >>. spaces1 >>. parseExpression .>> parseSemicolon
         |>> Statement.Return
 
+    // exit 文パーサ
+    let parseExit : Parser<Statement, unit> =
+        pstring "exit" >>. parseSemicolon
+        |>> fun _ -> Statement.Exit
+
     // 改行・空白行パーサ
     let parseLineEnd : Parser<unit, unit> =
         skipMany (anyOf ['\r'; '\n'])
@@ -209,6 +214,7 @@ module Parser =
         choice [
             attempt parseFunction
             attempt parseReturn
+            attempt parseExit
             attempt parseLet
             attempt parseMut
             attempt parseAssign
