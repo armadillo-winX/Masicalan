@@ -40,7 +40,17 @@ let z = add(3, 2);
 ```
 
 関数は，既に定義済みの関数と同名のものを定義しようとすると，
-元々の関数を上書きするようになっています．
+元々の関数を上書きするようになっています．<br>
+値を返さない関数で早期に関数から抜ける場合は，`exit`を用います．
+```
+fun printMessage(option) {
+    if (option == false) { 
+        exit; 
+    }
+
+    printn("Hello World");
+}
+```
 
 ### 基本的な関数
 Masicalan には
