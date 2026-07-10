@@ -6,13 +6,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-	  <Authors>Mashiro Tamane</Authors>
+	  <!--<Authors>Mashiro Tamane</Authors>-->
 	  <Product>Masicalan Vault VFS Graphical Sample</Product>
-	  <Copyright>Copyright (c) 2026 $(Authors)</Copyright>
+	  <!--<Copyright>Copyright (c) 2026 $(Authors)</Copyright>
 	  <Version>$(VersionPrefix)$(VersionSuffix)</Version>
 	  <VersionPrefix>0.1.0</VersionPrefix>
 	  <VersionSuffix>preview.0</VersionSuffix>
-	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>-->
   </PropertyGroup>
 
   <ItemGroup>
