@@ -10,15 +10,25 @@ module Parser =
     // // で始まる行コメントをスキップするパーサ
     let lineComment = pstring "//" >>. skipManySatisfy (fun c -> c <> '\n' && c <> '\r') >>% ()
 
+    // @で始まる行（行頭に@がある場合）を丸ごとスキップするパーサ
+    // 行の最初の文字が '@' のときだけマッチし、その行を最後まで読み飛ばす
+    let metaLine : Parser<unit, unit> =
+        getPosition
+        >>= fun pos ->
+            if pos.Column = 1 then
+                pchar '@' >>. skipManySatisfy (fun c -> c <> '\n' && c <> '\r') >>% ()
+            else
+                fail "not-meta-line"
+
     // 空白文字（改行含む）を unit に変換するヘルパー
     let whitespaceChar = anyOf [' '; '\t'; '\r'; '\n'] >>% ()
 
     // 元の wspace 相当（スペースとタブのみ + コメントをスキップ）
-    let wspace = skipMany (choice [ anyOf [' '; '\t'] >>% (); blockComment; lineComment ])
+    let wspace = skipMany (choice [ anyOf [' '; '\t'] >>% (); blockComment; lineComment; metaLine ])
 
     // 改行を含む空白（spaces）と、その1回以上版（spaces1）をコメント対応で上書き
-    let spaces = skipMany (choice [ whitespaceChar; blockComment; lineComment ])
-    let spaces1 = many1 (choice [ whitespaceChar; blockComment; lineComment ]) >>% ()
+    let spaces = skipMany (choice [ whitespaceChar; blockComment; lineComment; metaLine ])
+    let spaces1 = many1 (choice [ whitespaceChar; blockComment; lineComment; metaLine ]) >>% ()
 
     // 整数値リテラルパーサ
     let parseIntLiteral : Parser<Expression, unit> = 
