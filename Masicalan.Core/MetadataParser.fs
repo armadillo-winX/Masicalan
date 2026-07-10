@@ -16,10 +16,10 @@ module MetadataParser =
     let private parseQuotedValue : Parser<string, unit> =
         between (pchar '"') (pchar '"') (manyChars (noneOf "\""))
 
-    // 行単位のメタパーサ：先頭に任意の空白があっても良いが、@が現れた行のみを対象とする
-    // 例: @Name="MyScript"
+    // 行単位のメタパーサ：行の先頭文字が必ず'@'で始まる行のみをメタデータとして扱う
+    // 例: @Name="MyScript"  （先頭に空白があるとパースされない）
     let private metaLineParser : Parser<string * string, unit> =
-        skipMany (anyOf [' '; '\t']) >>. pchar '@' >>. parseKey .>> spaces .>> pchar '=' .>> spaces .>>. parseQuotedValue .>> skipMany (anyOf [' '; '\t']) .>> eof
+        pchar '@' >>. parseKey .>> spaces .>> pchar '=' .>> spaces .>>. parseQuotedValue .>> skipMany (anyOf [' '; '\t']) .>> eof
 
     // スクリプト全体からメタ情報を収集して Metadata レコードを返す。
     // 見つからないフィールドは空文字列になる。
