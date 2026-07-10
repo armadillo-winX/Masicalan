@@ -24,7 +24,7 @@
     <Compile Include="Parser.fs" />
     <Compile Include="PrimitiveExtension.fs" />
     <Compile Include="Interpreter.fs" />
-    <Compile Include="ScriptMetadata.fs" />
+    <Compile Include="MetadataParser.fs" />
   </ItemGroup>
 
   <ItemGroup>
