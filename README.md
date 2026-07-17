@@ -88,7 +88,7 @@ fun putMessage(i){
 ### ループ
 Masicalan では```while```キーワードでのループが可能です．
 ```
-let i = 0;
+mut i = 0;
 while (i < 10) {
     i <- i + 1;
 }
