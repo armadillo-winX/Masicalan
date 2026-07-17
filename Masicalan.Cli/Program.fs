@@ -28,6 +28,16 @@ let runInterprAndPrintEnv script =
     let env = Interpreter.Run script
     printfn "%A" env
 
+let printMetadata script =
+    let metadata = MetadataParser.ParseMetadata script
+    printfn ""
+    printfn "Name: %s" metadata.Name
+    printfn "Version: %s" metadata.Version
+    printfn "Author: %s" metadata.Author
+    printfn "Copyright: %s" metadata.Copyright
+    printfn "Description: %s" metadata.Description
+    printfn ""
+
 let readScriptFile filePath =
     let script = File.ReadAllText(filePath)
     script
@@ -57,6 +67,7 @@ while true do
     printfn "[0] Run script from a script file"
     printfn "[1] Run script from a script file with Standard Extension"
     printfn "[2] Run sample script files"
+    printfn "[3] Read script file metadata"
     printfn "[x] Exit"
     printfn "Enter operation:"
     let input = Console.ReadLine()
@@ -96,5 +107,12 @@ while true do
             else
                 printfn "Invalid selection"
         | None -> printfn "Sample code files are missing."
+    | "3" ->
+        printfn "Enter script file path:"
+        let pathInput = Console.ReadLine()
+        try
+            readScriptFile pathInput |> printMetadata
+        with
+        |_ as ex -> printfn "%s" ex.Message
     | "x" -> exit 0
     |_ -> printfn "Invalid operation.\n"
