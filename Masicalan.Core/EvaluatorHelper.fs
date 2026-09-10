@@ -107,7 +107,7 @@ module EvaluatorHelper =
         | (FloatVal lf, FloatVal rf) ->
             BoolVal (lf = rf)
         | (StringVal s1, StringVal s2) ->
-            failwithf "cannnot compare string values"
+            BoolVal (s1 = s2)
         | (BoolVal b1, BoolVal b2) ->
             BoolVal (b1 = b2)
         | (VoidVal, VoidVal) ->
