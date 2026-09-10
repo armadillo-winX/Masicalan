@@ -81,3 +81,14 @@ let env = Interpreter.RunWithExt script initialVars initialFuncs
 **Copyright** (c) 2007–2017, Stephan Tolksdorf. All rights reserved.<br>
 **ライセンス**: BSD 2-clause License<br>
 [FParsec のライセンス詳細](https://www.quanttec.com/fparsec/license.html)
+
+## 更新履歴
+
+### ver.0.2.0-preview.1
+- `exit`文の実装．
+- 不変変数と可変変数を実装．
+- メタデータ機能を実装．
+- その他軽微な修正．
+
+### ver.0.1.0-preview.0
+- 初回プレリリース版
