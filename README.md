@@ -95,6 +95,22 @@ while (i < 10) {
 printn(toString(i));
 ```
 
+### スクリプトへのメタデータの書き込み
+Masicalan スクリプトファイルには，`@`に始まる固有の識別子によって，
+メタ情報を埋め込むことができます．
+埋め込むことができるのは，
+名前(`@Name=""`)，バージョン(`@Version=""`)，
+作者(`@Author=""`)，著作権情報(`@Copyright=""`)，
+そして説明(`@Description=""`)です．<br>
+たとえば，次のように記述します．
+```
+@Name="Sample Number 6"
+@Version="1.0.0"
+@Author="Mashiro Tamane"
+@Copyright="Copyright (c) Mashiro Tamane"
+@Description="Masicalan sample script."
+```
+
 ## 使用しているライブラリ
 パーサの実装には [FParsec](https://github.com/stephan-tolksdorf/fparsec) を利用しています．<br>
 ### FParsec
