@@ -110,6 +110,8 @@ Masicalan スクリプトファイルには，`@`に始まる固有の識別子�
 @Copyright="Copyright (c) Mashiro Tamane"
 @Description="Masicalan sample script."
 ```
+なお，これらのメタデータを記述するためには，
+`@`に始まる識別子を必ず行の先頭に記さなければなりません．
 
 ## 使用しているライブラリ
 パーサの実装には [FParsec](https://github.com/stephan-tolksdorf/fparsec) を利用しています．<br>
